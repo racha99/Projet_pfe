@@ -1,0 +1,390 @@
+<!doctype html>
+<html lang="en">
+  <head>
+    <!-- Required meta tags -->
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+
+    <!-- Bootstrap CSS -->
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.0.2/dist/css/bootstrap.min.css" rel="stylesheet" integrity="sha384-EVSTQN3/azprG1Anm3QDgpJLIm9Nao0Yz1ztcQTwFspd3yD65VohhpuuCOmLASjC" crossorigin="anonymous">
+
+    <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.5.1/jquery.min.js"></script>
+    {% load static %}
+    <link rel="stylesheet" href="{% static 'css/styles.css' %}">
+
+    <title>Classification</title>
+  </head>
+  <body>
+
+    
+    <!-- Option 1: Bootstrap Bundle with Popper -->
+    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.0.2/dist/js/bootstrap.bundle.min.js" integrity="sha384-MrcW6ZMFYlzcLA8Nl+NtUVF0sA7MsXsP1UyJoMp4YLEuNSfAP+JcXn/tWtIaxVXM" crossorigin="anonymous"></script>
+
+    <nav class="navbar navbar-expand-lg navbar-dark bg-dark">
+      <div class="container-fluid">
+        <a class="navbar-brand" href="#">Navbar</a>
+        <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbarSupportedContent" aria-controls="navbarSupportedContent" aria-expanded="false" aria-label="Toggle navigation">
+          <span class="navbar-toggler-icon"></span>
+        </button>
+        <div class="collapse navbar-collapse" id="navbarSupportedContent">
+          <ul class="navbar-nav me-auto mb-2 mb-lg-0">
+            <li class="nav-item">
+              <a class="nav-link "  href="/">Home</a>
+            </li>
+            <li class="nav-item">
+              <a class="nav-link " aria-current="page" href="/classification">Classification</a>
+            </li>
+            <li class="nav-item">
+              <a class="nav-link active" href="/modeles">Modeles</a>
+            </li>
+            <li class="nav-item">
+              <a class="nav-link" href="#">Association</a>
+            </li>
+            <li class="nav-item dropdown">
+              <a class="nav-link dropdown-toggle" href="#" id="navbarDropdown" role="button" data-bs-toggle="dropdown" aria-expanded="false">
+                Dropdown
+              </a>
+              <ul class="dropdown-menu" aria-labelledby="navbarDropdown">
+                <li><a class="dropdown-item" href="#">Action</a></li>
+                <li><a class="dropdown-item" href="#">Another action</a></li>
+                <li><hr class="dropdown-divider"></li>
+                <li><a class="dropdown-item" href="#">Something else here</a></li>
+              </ul>
+            </li>
+            <li class="nav-item">
+              <a class="nav-link disabled" href="#" tabindex="-1" aria-disabled="true">Disabled</a>
+            </li>
+          </ul>
+          <form class="d-flex">
+            <input class="form-control me-2" type="search" placeholder="Search" aria-label="Search">
+            <button class="btn btn-outline-success" type="submit">Search</button>
+          </form>
+        </div>
+      </div>
+    </nav>
+ 
+    <Select id="colorselector">
+        <option value="red">Red</option>
+        <option value="yellow">Yellow</option>
+        <option value="blue">Blue</option>
+     </Select>
+  
+      <div class="container">
+        <div class="row">
+          <div class="col">
+            <div class="card border-primary mb-3 card-table" style="width: auto;" >  
+                <div class="card-body" >
+                  <div class="card-header" style="margin-bottom: 20px;">Perfermonce du modele SVM</div>
+                   <table id="blue"  class="table table-success table-striped w-auto " style="visibility: hidden; display: none;">
+                    <thead>
+                      <tr>
+                        <th scope="col">Classe</th>
+                        {% for c in  head%}
+                        <th scope="col">{{c}}</th>
+                        {% endfor %}
+                      </tr>
+                    </thead>
+                    <tbody>
+                      <tr>
+                        <th scope="row">Positive</th>
+                        {% for c in  positives%}
+                        <th scope="col">{{c}}</th>
+                        {% endfor %}
+                      </tr>
+                      <tr>
+                        <th scope="row">Négative</th>
+                        {% for c in  negatives%}
+                        <th scope="col">{{c}}</th>
+                        {% endfor %}
+                      </tr>
+                      <tr>
+                        <th scope="row">Neutre</th>
+                        {% for c in  neutres%}
+                        <th scope="col">{{c}}</th>
+                        {% endfor %}
+                      </tr>
+                    </tbody>
+                  </table>
+                </div>
+              </div>
+            </div>
+          <div class="col">
+            <div class="card border-primary mb-3 card-table" style="width: auto;">  
+                <div class="card-body" >
+                  <div class="card-header" style="margin-bottom: 20px;">Perfermonce du modele RNN</div>
+                   <table  class="table table-success table-striped w-auto  ">
+                    <thead>
+                      <tr>
+                        <th scope="col">Classe</th>
+                        {% for c in  head%}
+                        <th scope="col">{{c}}</th>
+                        {% endfor %}
+                      </tr>
+                    </thead>
+                    <tbody>
+                      <tr>
+                        <th scope="row">Positive</th>
+                        {% for c in  positiver%}
+                        <th scope="col">{{c}}</th>
+                        {% endfor %}
+                      </tr>
+                      <tr>
+                        <th scope="row">Négative</th>
+                        {% for c in  negativer%}
+                        <th scope="col">{{c}}</th>
+                        {% endfor %}
+                      </tr>
+                      <tr>
+                        <th scope="row">Neutre</th>
+                        {% for c in  neutrer%}
+                        <th scope="col">{{c}}</th>
+                        {% endfor %}
+                      </tr>
+                    </tbody>
+                  </table>
+                </div>
+              </div>
+            </div>
+        
+           <div class="col">
+            <div class="card border-primary mb-3 card-table" style="width: auto;">  
+                <div class="card-body" >
+                  <div class="card-header" style="margin-bottom: 20px;">Perfermonce du modele KPP</div>
+                   <table  class="table table-success table-striped w-auto  ">
+                    <thead>
+                      <tr>
+                        <th scope="col">Classe</th>
+                        {% for c in  head%}
+                        <th scope="col">{{c}}</th>
+                        {% endfor %}
+                      </tr>
+                    </thead>
+                    <tbody>
+                      <tr>
+                        <th scope="row">Positive</th>
+                        {% for c in  positivek%}
+                        <th scope="col">{{c}}</th>
+                        {% endfor %}
+                      </tr>
+                      <tr>
+                        <th scope="row">Négative</th>
+                        {% for c in  negativek%}
+                        <th scope="col">{{c}}</th>
+                        {% endfor %}
+                      </tr>
+                      <tr>
+                        <th scope="row">Neutre</th>
+                        {% for c in  neutrek%}
+                        <th scope="col">{{c}}</th>
+                        {% endfor %}
+                      </tr>
+                    </tbody>
+                  </table>
+                </div>
+              </div>
+            </div>
+          </div>
+         
+      </div> 
+     
+      <div class="container">
+        <div class="row">
+          <div class="col">
+            <div class="card border-primary mb-3 card-table" style="width: auto;">  
+                <div class="card-body" >
+                  <div class="card-header" style="margin-bottom: 20px;">Perfermonce du modele SVM</div>
+                   <table  class="table table-success table-striped w-auto  ">
+                    <thead>
+                      <tr>
+                        <th scope="col">Classe</th>
+                        {% for c in  head%}
+                        <th scope="col">{{c}}</th>
+                        {% endfor %}
+                      </tr>
+                    </thead>
+                    <tbody>
+                      <tr>
+                        <th scope="row">Contenu</th>
+                        {% for c in  contenu%}
+                        <th scope="col">{{c}}</th>
+                        {% endfor %}
+                      </tr>
+                      <tr>
+                        <th scope="row">Communication</th>
+                        {% for c in  communication%}
+                        <th scope="col">{{c}}</th>
+                        {% endfor %}
+                      </tr>
+                      <tr>
+                        <th scope="row">Design</th>
+                        {% for c in  design%}
+                        <th scope="col">{{c}}</th>
+                        {% endfor %}
+                      </tr>
+                      <tr>
+                        <th scope="row">Général</th>
+                        {% for c in  general%}
+                        <th scope="col">{{c}}</th>
+                        {% endfor %}
+                      </tr>
+                      <tr>
+                        <th scope="row">Présentation</th>
+                        {% for c in  presentation%}
+                        <th scope="col">{{c}}</th>
+                        {% endfor %}
+                      </tr>
+                      <tr>
+                        <th scope="row">Structure</th>
+                        {% for c in  structure%}
+                        <th scope="col">{{c}}</th>
+                        {% endfor %}
+                      </tr>
+                    </tbody>
+                  </table>
+                </div>
+              </div>
+            </div>
+          <div class="col">
+            <div class="card border-primary mb-3 card-table" style="width: auto;">  
+                <div class="card-body" >
+                  <div class="card-header" style="margin-bottom: 20px;">Perfermonce du modele RNN</div>
+                   <table  class="table table-success table-striped w-auto  ">
+                    <thead>
+                      <tr>
+                        <th scope="col">Classe</th>
+                        {% for c in  head%}
+                        <th scope="col">{{c}}</th>
+                        {% endfor %}
+                      </tr>
+                    </thead>
+                    <tbody>
+                        <tr>
+                            <th scope="row">Contenu</th>
+                            {% for c in  contenuar%}
+                            <th scope="col">{{c}}</th>
+                            {% endfor %}
+                          </tr>
+                          <tr>
+                            <th scope="row">Communication</th>
+                            {% for c in  communicationar%}
+                            <th scope="col">{{c}}</th>
+                            {% endfor %}
+                          </tr>
+                          <tr>
+                            <th scope="row">Design</th>
+                            {% for c in  designar%}
+                            <th scope="col">{{c}}</th>
+                            {% endfor %}
+                          </tr>
+                          <tr>
+                            <th scope="row">Général</th>
+                            {% for c in  generalar%}
+                            <th scope="col">{{c}}</th>
+                            {% endfor %}
+                          </tr>
+                          <tr>
+                            <th scope="row">Présentation</th>
+                            {% for c in  presentationar%}
+                            <th scope="col">{{c}}</th>
+                            {% endfor %}
+                          </tr>
+                          <tr>
+                            <th scope="row">Structure</th>
+                            {% for c in  structurear%}
+                            <th scope="col">{{c}}</th>
+                            {% endfor %}
+                          </tr>
+                    </tbody>
+                  </table>
+                </div>
+              </div>
+            </div>
+        
+           <div class="col">
+            <div class="card border-primary mb-3 card-table" style="width: auto;">  
+                <div class="card-body" >
+                  <div class="card-header" style="margin-bottom: 20px;">Perfermonce du modele KPP</div>
+                   <table  class="table table-success table-striped w-auto  ">
+                    <thead>
+                      <tr>
+                        <th scope="col">Classe</th>
+                        {% for c in  head%}
+                        <th scope="col">{{c}}</th>
+                        {% endfor %}
+                      </tr>
+                    </thead>
+                    <tbody>
+                        <tr>
+                            <th scope="row">Contenu</th>
+                            {% for c in  contenuak%}
+                            <th scope="col">{{c}}</th>
+                            {% endfor %}
+                          </tr>
+                          <tr>
+                            <th scope="row">Communication</th>
+                            {% for c in  communicationak%}
+                            <th scope="col">{{c}}</th>
+                            {% endfor %}
+                          </tr>
+                          <tr>
+                            <th scope="row">Design</th>
+                            {% for c in  designak%}
+                            <th scope="col">{{c}}</th>
+                            {% endfor %}
+                          </tr>
+                          <tr>
+                            <th scope="row">Général</th>
+                            {% for c in  generalak%}
+                            <th scope="col">{{c}}</th>
+                            {% endfor %}
+                          </tr>
+                          <tr>
+                            <th scope="row">Présentation</th>
+                            {% for c in  presentationak%}
+                            <th scope="col">{{c}}</th>
+                            {% endfor %}
+                          </tr>
+                          <tr>
+                            <th scope="row">Structure</th>
+                            {% for c in  structureak%}
+                            <th scope="col">{{c}}</th>
+                            {% endfor %}
+                          </tr>
+                    </tbody>
+                  </table>
+                </div>
+              </div>
+            </div>
+          </div>
+         
+      </div>  
+ 
+
+
+
+
+    
+  
+   <script>
+
+$(function() {
+        $('#colorselector').change(function(){
+            // $('#' + $(this).val()).show();
+
+            if ($(this).val() == 'yellow') {
+             $("#blue").css("visibility", "visible");
+             $("#blue").css("display", "block");}
+ 
+             if ($(this).val() == 'blue') {
+             $("#blue").css("visibility", "hidden");
+             $("#blue").css("display", "none");}
+             
+        });
+
+        
+    });
+
+      
+   </script>
+  </body>
+</html>

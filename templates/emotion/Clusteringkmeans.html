@@ -1,0 +1,401 @@
+<!DOCTYPE html>
+<html>
+
+<head>
+    <meta charset="UTF-8">
+    <link rel="stylesheet" href="https://stackpath.bootstrapcdn.com/bootstrap/4.1.3/css/bootstrap.min.css"
+        integrity="sha384-MCw98/SFnGE8fJT3GXwEOngsV7Zt27NXFoaoApmYm81iuXoPkFOJwJ8ERdknLPMO" crossorigin="anonymous">
+    <script src="https://cdn.jsdelivr.net/npm/chart.js@2.9.4/dist/Chart.min.js"></script>
+    <script>src = "https://cdnjs.cloudflare.com/ajax/libs/jquery/3.1.0/jquery.min.js"</script>
+    <script src="https://ajax.googleapis.com/ajax/libs/jquery/2.1.1/jquery.min.js">
+    </script>
+     <script src="https://npmcdn.com/tether@1.2.4/dist/js/tether.min.js">
+    </script>
+
+    <title>K-means</title>
+    <style>
+        html,body {
+            height: 100%;
+        } 
+
+  
+    </style>
+    </head>
+    <body>
+        <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.0.2/dist/js/bootstrap.bundle.min.js" integrity="sha384-MrcW6ZMFYlzcLA8Nl+NtUVF0sA7MsXsP1UyJoMp4YLEuNSfAP+JcXn/tWtIaxVXM" crossorigin="anonymous"></script>
+
+        <nav class="navbar navbar-expand-lg navbar-dark" style="background-color: #343b50;">
+            <div class="container-fluid">
+              <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbarSupportedContent" aria-controls="navbarSupportedContent" aria-expanded="false" aria-label="Toggle navigation">
+                <span class="navbar-toggler-icon"></span>
+              </button>
+              <div class="collapse navbar-collapse" id="navbarSupportedContent">
+                <ul class="navbar-nav me-auto mb-2 mb-lg-0">
+                  <li class="nav-item">
+                    <a class="nav-link "  href="/">Home</a>
+                  </li>
+                  <li class="nav-item">
+                    <a class="nav-link "  href="/results">Dashboard</a>
+                  </li>
+                  <!-- <li class="nav-item">
+                    <a class="nav-link active "  href="/clusteringkmeans">Clustering</a>
+                </li>  -->
+                    <li class="nav-item dropdown">
+                        <a class="nav-link active dropdown-toggle" href="#" id="navbarDropdown" role="button" data-bs-toggle="dropdown" aria-expanded="false">
+                            Clustering
+                        </a>
+                        <ul class="dropdown-menu" aria-labelledby="navbarDropdown">
+                          <li><a class="dropdown-item active" href="/clusteringkmeans">K-means</a></li>
+                          <li><a class="dropdown-item" href="clusteringKmodes">K-modes</a></li>
+                          
+                        </ul>
+                      </li>  
+                  
+                  <li class="nav-item">
+                    <a class="nav-link "  href="/association">Association</a>
+                  </li>
+      
+                 
+                  <li class="nav-item">
+                    <a class="nav-link " aria-current="page" href="/construction">Apprentissage</a>
+                  </li>
+      
+                  <li class="nav-item">
+                    <a class="nav-link " aria-current="page" href="/classification">Prédiction</a>
+                  </li>
+                  
+                </ul>
+                
+              </div>
+            </div>
+          </nav>
+        
+
+        <div class="container">
+         <div class="row">
+                <div class="col-lg-6">
+                    <div class="card card-chart  mb-3">
+                        <div class="card-body">
+                            <div class="chart-area">
+                                <canvas id="kmeansElbow"></canvas>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+                <div class="col-lg-6">
+                    <div class="card card-chart mb-3">
+                        <div class="card-body">
+                            <div class="chart-area">
+                                <canvas id="kmeansSilhouette"></canvas>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
+
+
+            </div>
+          <div>
+            
+                <form method="POST"> 
+                  {% csrf_token %}
+                    <div class="row">
+                      <div class="form-group col justify-content-center d-flex">
+                            
+                            <input class="form-control w-25" type="number" placeholder="k clusters" step="1" min="1" max="10" name="k"
+                                required>
+                            <button type="submit" class="btn w-10 " style="background-color: #4bc0c0 ;color: white; font-weight: bold;">Lancer</button>
+                       
+                      </div>
+                     
+                   
+                               
+                     
+                      
+                    </div>
+                </form>
+           
+          </div>
+                
+    
+            <div class="row">
+              <div class="col-lg-6">
+                <div class="card card-chart mb-3">
+                    <div class="card-body">
+                        <div class="chart-area">
+                            <canvas id="BarchartCluster"></canvas>
+                        </div>
+                    </div>
+                </div>
+              </div>
+              <div class="col-lg-6">
+                <div class="card card-chart mb-3">
+                    <div class="card-body">
+                        <div class="chart-area">
+                            <canvas id="bar-chartP"></canvas>
+                        </div>
+                    </div>
+                </div>
+              </div>
+              <div class="col-lg-6">
+                <div class="card card-chart mb-3">
+                    <div class="card-body">
+                        <div class="chart-area">
+                            <canvas id="bar-chartgS"></canvas>
+                        </div>
+                    </div>
+                </div>
+              </div>
+              <div class="col-lg-6">
+                <div class="card card-chart mb-3">
+                    <div class="card-body">
+                        <div class="chart-area">
+                            <canvas id="bar-chartgA"></canvas>
+                        </div>
+                    </div>
+                </div>
+              </div>
+
+        
+
+
+
+            </div>
+        </div>
+
+        
+
+
+
+
+
+
+     
+      <script>
+        var colorArray = [
+                '#FD6C9E', '#AF7AC5', '#5DADE2', '#E59866', '#F5B041',
+                '#AAB7B8', '#F18989', '#06d2a6', '#DFE8AA', '#c45850',
+                '#E1CE9A', '#87591A', '#9DC025', '#FD4626', '#87E990'
+            ];
+
+
+        new Chart(document.getElementById("kmeansElbow"),{
+                type: "line",
+                data: {
+                    labels: ['1','2','3','4','5','6','7','8','9','10'],
+                    datasets: [{
+                           label: "",
+                           data: {{Kmeans_elbow| safe }},
+                           fill: false,
+                           borderColor: 'rgb(75, 192, 192)',
+                      }]
+            
+                },
+                options: {
+                       title: {
+                            display: true,
+                            text: 'Méthode du coude'
+
+
+
+                        }
+                } 
+        });
+
+        new Chart(document.getElementById("kmeansSilhouette"), {
+                type: "line",
+                data: {
+                    labels: ['2', '3', '4', '5', '6', '7', '8', '9', '10'],
+                    datasets: [{
+                        label: "",
+                        data: {{ Silhouette_kmeans| safe }},
+                        
+                        fill: false,
+                        borderColor: 'rgb(75, 192, 192)',
+                    }]
+            
+                },
+                options: {
+                        title: {
+                              display: true,
+                              text: 'Méthode de la silhouette'
+
+
+
+                }
+            } 
+        });
+
+        new Chart(document.getElementById("BarchartCluster"), {
+                type: "pie",
+                data: {
+                    labels: {{ listKeys_cluster| safe }},
+                    datasets: [{
+                              label: "",
+                              backgroundColor: colorArray,
+                              data: {{ listvalues_cluster| safe }}
+                     }]
+            
+                },
+                options: {
+                        title: {
+                              display: true,
+                              text: 'Nombre de commentaires par cluster'
+
+
+
+                        }
+
+                }
+        });
+
+
+        new Chart(document.getElementById("bar-chartP"), {
+                type: 'bar',
+                data: {
+                    labels: {{ listkeys_Cg | safe }},
+                    datasets: [
+                              {
+                            label: 'Positive',
+                            backgroundColor: '#FD6C9E',
+                            data: {{ listvaluesg_P | safe }},
+                              
+                        },
+                        {
+                            label: 'Négative',
+                            backgroundColor: '#AF7AC5',
+                            data: {{ listvaluesg_N | safe }},
+                              
+                        },
+                        {
+                           label: 'Neutre',
+                           backgroundColor: '#5DADE2',
+                           data: {{ listvaluesg_NE | safe }},
+                              
+                        }
+                   ],
+                    
+                },
+                options: {
+                       title: {
+                             display: true,
+                             text: 'Nombre de commentaires dans chaque cluster selon la polarité',
+                         }
+
+
+
+                 }
+   
+        });
+        
+        new Chart(document.getElementById("bar-chartgS"), {
+                type: 'bar',
+                data: {
+                    labels: {{ listkeys_Cg| safe }},
+                    datasets: [
+                              {
+                               label: 'Joie',
+                               backgroundColor: '#FD6C9E',
+                               data: {{ listvaluess_J | safe }},
+                              
+                             },
+                             {
+                             label: 'Mécontentement',
+                             backgroundColor: '#AF7AC5',
+                             data: {{ listvaluess_M | safe }},
+                              
+                             },
+                             {
+                             label: 'Ennui',
+                             backgroundColor: '#5DADE2',
+                             data: {{ listvaluess_E| safe }},
+                              
+                            },
+                            {
+                             label: 'Anxiété',
+                             backgroundColor: '#E59866',
+                             data: {{ listvaluess_A| safe }},
+                              
+                            },
+                            {
+                             label: 'NE',
+                             backgroundColor: '#F5B041',
+                             data: {{ listvaluess_NE| safe }},
+                              
+                            },
+                            {
+                             label: 'Confusion',
+                             backgroundColor: '#AAB7B8',
+                             data: {{ listvaluess_F| safe }},
+                              
+                            },
+                            {
+                             label: 'Colére',
+                             backgroundColor: '#F18989',
+                             data: {{ listvaluess_C| safe }},
+                              
+                            },
+                            ],
+                    
+                },
+                options: {
+                       title: {
+                            display: true,
+                            text: 'Nombre de commentaires dans chaque cluster selon Sentiment ',
+                       }
+
+
+
+                    }
+   
+        });
+
+        new Chart(document.getElementById("bar-chartgA"), {
+                type: 'bar',
+                data: {
+                    labels: {{ listkeys_Cg | safe }},
+                    datasets: [
+                              {
+                               label: 'Amicale',
+                               backgroundColor: '#FD6C9E',
+                               data: {{ listvaluest_A | safe }},
+                              
+                              },
+                              {
+                               label: 'Hostile',
+                               backgroundColor: '#AF7AC5',
+                               data: {{ listvaluest_H | safe }},
+                              
+                             },
+                             {
+                              label: 'Neutre',
+                              backgroundColor: '#5DADE2',
+                              data: {{ listvaluest_NE | safe }},
+                              
+                             },
+                        ],
+                    
+                },
+                options: {
+                       title: {
+                            display: true,
+                             text: 'Nombre de commentaires dans chaque cluster selon Attitude',
+                       }
+                }
+            });
+
+
+    
+
+      </script>
+
+<footer class="sticky-footer" style="background-color: #343B50;">
+        <div class="container my-auto">
+            <div class="copyright text-center my-auto" style="color: white;">
+                <span>Copyright &copy; Analysis of learners' behaviors and emotions in an online course 2021</span>
+            </div>
+        </div>
+ </footer>
+</body>
+</html>
+    

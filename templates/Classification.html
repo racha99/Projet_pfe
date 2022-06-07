@@ -1,0 +1,693 @@
+<!doctype html>
+<html lang="en">
+  <head>
+    <!-- Required meta tags -->
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+
+    <!-- Bootstrap CSS -->
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.0.2/dist/css/bootstrap.min.css" rel="stylesheet" integrity="sha384-EVSTQN3/azprG1Anm3QDgpJLIm9Nao0Yz1ztcQTwFspd3yD65VohhpuuCOmLASjC" crossorigin="anonymous">
+
+    <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.5.1/jquery.min.js"></script>
+    {% load static %}
+    <link rel="stylesheet" href="{% static 'css/styles.css' %}">
+
+    <title>Classification</title>
+  </head>
+  <body>
+
+    
+    <!-- Option 1: Bootstrap Bundle with Popper -->
+    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.0.2/dist/js/bootstrap.bundle.min.js" integrity="sha384-MrcW6ZMFYlzcLA8Nl+NtUVF0sA7MsXsP1UyJoMp4YLEuNSfAP+JcXn/tWtIaxVXM" crossorigin="anonymous"></script>
+
+    <nav class="navbar navbar-expand-lg navbar-dark" style="background-color: #343b50;">
+      <div class="container-fluid">
+        <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbarSupportedContent" aria-controls="navbarSupportedContent" aria-expanded="false" aria-label="Toggle navigation">
+          <span class="navbar-toggler-icon"></span>
+        </button>
+        <div class="collapse navbar-collapse" id="navbarSupportedContent">
+          <ul class="navbar-nav me-auto mb-2 mb-lg-0">
+            <li class="nav-item">
+              <a class="nav-link "  href="/">Home</a>
+            </li>
+            <li class="nav-item">
+              <a class="nav-link "  href="/results">Dashboard</a>
+            </li>
+            <li class="nav-item dropdown">
+              <a class="nav-link  dropdown-toggle" href="/clusteringkmeans" id="navbarDropdown" role="button" data-bs-toggle="dropdown" aria-expanded="false">
+                  Clustering
+              </a>
+              <ul class="dropdown-menu" aria-labelledby="navbarDropdown">
+                <li><a class="dropdown-item " href="/clusteringkmeans">K-means</a></li>
+                <li><a class="dropdown-item" href="clusteringKmodes">K-modes</a></li>
+                
+              </ul>
+            </li> 
+            <li class="nav-item">
+              <a class="nav-link "  href="/association">Association</a>
+            </li>
+
+           
+            <li class="nav-item">
+              <a class="nav-link " aria-current="page" href="/construction">Apprentissage</a>
+            </li>
+
+            <li class="nav-item">
+              <a class="nav-link active " aria-current="page" href="/classification">Prédiction</a>
+            </li>
+            
+          </ul>
+          
+        </div>
+      </div>
+    </nav>
+  
+    
+    <div class="container">
+      <div class="row ">
+        <div class="col ">
+          <div class="card border-primary " style="background-color: #343b50;" >
+            <h5 class="text-white" style="margin-top: 20px; margin-left: 40px;">Modeles de classification</h5>
+            <div class="card-body text-primary">
+              
+             
+              
+              <div class="container "> 
+                <div class="row mt-3">
+                  <div class="col-6">
+                    <p class="card-text text-white" >Modele de classification :</p>
+                  </div>
+                  <div class="col-6">
+                    <select id="Namemodel" class="form-select" required aria-label="select example" style="width:15;">
+                      {% for file in files %}
+                      <option value="{{file}}"  >{{file}}</option>
+                      {% endfor %}
+                    </select>
+                  </div>        
+                  </div>
+                <div class="row mt-3">
+                  <div class="col-6">
+                    <p class="card-text text-white"  >Niveau de classification :</p>
+                  </div>
+                  <div class="col-6">
+                    <!-- <select id="Repre" class="form-select" required aria-label="select example" style="width:15;">
+                    <option value="p" selected >Polarité</option>
+                    <option value="s">Sentiments</option>
+                    <option value="as">Aspects</option>
+                    <option value="a" >Attitude</option> -->
+                  <!-- </select> -->
+                    <p class="card-text text-white " style="font-weight: bold;" id="niveau" > {{niveau}}</p>
+                  </div>        
+                  </div>
+
+                <div class="row mt-3">
+                <div class="col-6">
+                  <p class="card-text text-white" >Classifieur Sélectionné :</p>
+                </div>  
+                <div class="col-6">
+                  <!-- <select id="Classif" class="form-select" required aria-label="select example" style="width:15;">
+                  <option value="svm">SVM</option>
+                  <option value="rnn">Réseau de neurones</option>
+                  <option value="kpp">KPP</option>
+                  </select>                 -->
+                  <p class="card-text text-white " style="font-weight: bold; " id="classifieur" > {{classifieur}}</p>
+                </div>
+              </div> 
+              
+                <div class="row mt-3">
+                <div class="col-6">
+                  <p class="card-text text-white" >Représentation Sélectionné :</p>
+                </div>
+                <div class="col-6">
+                  <!-- <select id="Repres" class="form-select" required aria-label="select example" style="width:15;">
+                  <option value="1">Unigramme</option>
+                  <option value="2">Bigramme</option>
+                  <option value="3">Trigramme</option>
+                  <option value="12" selected >Unigramme & Bigramme</option>
+                  <option value="123">Unigramme & Bigramme &Trigramme</option>
+                  </select> -->
+                  <p class="card-text text-white " style="font-weight: bold;" id="represent"  > {{represent}}</p>
+                </div>        
+                </div>
+
+                <div class="row mt-3">
+                  <div class="col-6">
+                    <p class="card-text text-white" >Pourcentage test:</p>
+                  </div>
+                  <div class="col-6">
+                    <!-- <select id="Repres" class="form-select" required aria-label="select example" style="width:15;">
+                    <option value="1">Unigramme</option>
+                    <option value="2">Bigramme</option>
+                    <option value="3">Trigramme</option>
+                    <option value="12" selected >Unigramme & Bigramme</option>
+                    <option value="123">Unigramme & Bigramme &Trigramme</option>
+                    </select> -->
+                    <p class="card-text text-white " style="font-weight: bold;" id="test"  > {{test}}%</p>
+                  </div>        
+                  </div>
+              
+              <div class="row mt-5" > 
+              <div class="col-6"  style="float: right;">  
+              <button class="btn btn-primary" style="width:auto; visibility: hidden;"  >Afficher Métriques</button>
+              </div>  
+              </div>
+
+              <!-- <div class="row mt-3" > 
+                <div class="col-6"  style="float: right;">  
+                <button  class="btn btn-primary" style="width:auto; visibility: hidden;"  >Afficher Métriques</button>
+                </div>  
+                </div> -->
+             
+              
+              <div class="row mt-3" > 
+                <div class="col-6"  style="float: right;">  
+                <button id="applique" class="btn text-white " style="width:auto; background-color: rgb(42, 187, 102);visibility: hidden; "  >Afficher Métriques</button>
+                </div>  
+                <div class="col-6" >  
+                  <button  class="md " data-bs-toggle="modal" data-bs-target="#exampleModal"
+                   style="width:auto; margin-left: 15px; float: right; background-color: #4bc0c0; margin: 0px;"  >Prédiction</button>
+                  </div>  
+              </div>
+
+             
+              
+              
+            </div>
+            </div>
+
+
+          </div>
+          
+          
+        </div>
+        <div class="col">
+          <div class="card border-0 my-3 card-table table-responsive" style="width: auto;">  
+            <div class="card-body" >
+              <h5  style="margin-bottom: 20px;">Perfermonce du modele</h5>
+               <table id="myTable" class="table  table-hover  table-bordered mx-auto   ">
+                <tr style="background-color: #4bc0c0;">
+                  <th>Classe</th>
+                  <th>Précision</th>
+                  <th>Rappel</th>
+                  <th>F</th>
+                </tr>
+
+                 {% if positive %}
+                  <tr>
+                    <td scope="row">Positive</td>
+                    {% for c in  positive%}
+                    <td scope="col">{{c}}</td>
+                    {% endfor %}
+                  </tr>
+                  {% endif %}
+                  
+                  {% if negative %}
+                  <tr>
+                    <td scope="row">Négative</td>
+                    {% for c in  negative%}
+                    <td scope="col">{{c}}</td>
+                    {% endfor %}
+                  </tr>
+                  {% endif %}
+                  {% if structure %}
+                  <tr>
+                    <td scope="row">Structure</td>
+                    {% for c in  structure%}
+                    <td scope="col">{{c}}</td>
+                    {% endfor %}
+                  </tr>
+                  {% endif %}
+                  {% if presentation %}
+                  <tr>
+                    <td scope="row">Présentation</td>
+                    {% for c in  presentation%}
+                    <td scope="col">{{c}}</td>
+                    {% endfor %}
+                  </tr>
+                  {% endif %}
+                  {% if communication %}
+                  <tr>
+                    <td scope="row">Communication</td>
+                    {% for c in  communication%}
+                    <td scope="col">{{c}}</td>
+                    {% endfor %}
+                  </tr>
+                  {% endif %}
+                  {% if contenu %}
+                  <tr>
+                    <td scope="row">Contenu</td>
+                    {% for c in  contenu%}
+                    <td scope="col">{{c}}</td>
+                    {% endfor %}
+                  </tr>
+                  {% endif %}
+                  {% if design %}
+                  <tr>
+                    <td scope="row">Design</td>
+                    {% for c in  design%}
+                    <td scope="col">{{c}}</td>
+                    {% endfor %}
+                  </tr>
+                  {% endif %}
+                  {% if general %}
+                  <tr>
+                    <td scope="row">Géneral</td>
+                    {% for c in  general%}
+                    <td scope="col">{{c}}</td>
+                    {% endfor %}
+                  </tr>
+                  {% endif %}
+
+                  {% if joie %}
+                  <tr>
+                    <td scope="row">Joie</td>
+                    {% for c in  joie%}
+                    <td scope="col">{{c}}</td>
+                    {% endfor %}
+                  </tr>
+                  {% endif %}
+
+                  {% if mecontentement %}
+                  <tr>
+                    <td scope="row">Mécontentement</td>
+                    {% for c in  mecontentement%}
+                    <td scope="col">{{c}}</td>
+                    {% endfor %}
+                  </tr>
+                  {% endif %}
+
+                  {% if anxiete %}
+                  <tr>
+                    <td scope="row">Anxiété</td>
+                    {% for c in  anxiete%}
+                    <td scope="col">{{c}}</td>
+                    {% endfor %}
+                  </tr>
+                  {% endif %}
+
+                  {% if colere %}
+                  <tr>
+                    <td scope="row">Colère</td>
+                    {% for c in  colere%}
+                    <td scope="col">{{c}}</td>
+                    {% endfor %}
+                  </tr>
+                  {% endif %}
+
+                  {% if ennui %}
+                  <tr>
+                    <td scope="row">Ennui</td>
+                    {% for c in ennui%}
+                    <td scope="col">{{c}}</td>
+                    {% endfor %}
+                  </tr>
+                  {% endif %}
+
+                  {% if confusion %}
+                  <tr>
+                    <td scope="row">Confusion</td>
+                    {% for c in  confusion%}
+                    <td scope="col">{{c}}</td>
+                    {% endfor %}
+                  </tr>
+                  {% endif %}
+
+                  {% if neutre %}
+                  <tr>
+                    <td scope="row">Neutre</td>
+                    {% for c in  neutre%}
+                    <td scope="col">{{c}}</td>
+                    {% endfor %}
+                  </tr>
+                  {% endif %}
+
+                  {% if amical %}
+                  <tr>
+                    <td scope="row">Amical</td>
+                    {% for c in  amical%}
+                    <td scope="col">{{c}}</td>
+                    {% endfor %}
+                  </tr>
+                  {% endif %}
+
+                  {% if hostile %}
+                  <tr>
+                    <td scope="row">Hostile</td>
+                    {% for c in  hostile%}
+                    <td scope="col">{{c}}</td>
+                    {% endfor %}
+                  </tr>
+                  {% endif %}
+
+                  {% if intrinseque %}
+                  <tr>
+                    <td scope="row">Intrinsèque</td>
+                    {% for c in  intrinseque%}
+                    <td scope="col">{{c}}</td>
+                    {% endfor %}
+                  </tr>
+                  {% endif %}
+
+                  {% if utilite %}
+                  <tr>
+                    <td scope="row">Utilité</td>
+                    {% for c in  utilite%}
+                    <td scope="col">{{c}}</td>
+                    {% endfor %}
+                  </tr>
+                  {% endif %}
+
+                  {% if accomplissement %}
+                  <tr>
+                    <td scope="row">Accomplissement</td>
+                    {% for c in  accomplissement%}
+                    <td scope="col">{{c}}</td>
+                    {% endfor %}
+                  </tr>
+                  {% endif %}
+
+                  {% if cout %}
+                  <tr>
+                    <td scope="row">Cout</td>
+                    {% for c in  cout%}
+                    <td scope="col">{{c}}</td>
+                    {% endfor %}
+                  </tr>
+                  {% endif %}
+
+              </table>
+           </div>
+          </div>
+          
+          
+        </div>
+      </div>
+     
+   
+ 
+
+
+<!-- Modal -->
+<div class="modal fade" id="exampleModal" tabindex="-1" aria-labelledby="exampleModalLabel" aria-hidden="true">
+  <div class="modal-dialog modal-dialog-centered">
+    <div class="modal-content" style="border: 0;">
+      <div class="modal-header">
+        <h5  style="margin-bottom: 20px;">Prédire un nouveau commentaire</h5>
+        <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+      </div>
+      <div class="modal-body pt-0" style="background-color: #343b50;">
+        
+          <div class="card-body text-white" style="background-color: #343b50;">
+            <form class="row g-3 needs-validation"  id="form" method="POST" novalidate>
+                <div class="col-6">
+                  <p class="card-text text-white" >Niveau de classification :</p>
+                </div>
+              <div class="col-6">
+                <p class="card-text text-white " style="font-weight: bold;" id="niveaupred" > </p>
+                 
+                  <!-- <select id="pridir" class="form-select" required aria-label="select example" style="width:15;">
+                  <option value="pp" selected >Polarité</option>
+                  <option value="sp">Sentiments</option>
+                  <option value="asp">Aspects</option>
+                  <option value="ap" >Attitude</option>
+                  </select> -->
+              </div>                
+              
+              <input class="form-control" id="commentaire" type="text" name="title" placeholder="Inroduit un commentaire..." required>
+              <div class="invalid-tooltip"> Saisit un commentaire!</div>
+              <button class="btn " type="submit" style="float: right;background-color: #4bc0c0;  border-radius: 5;font-weight: bold;color: white;">Classifier</button>
+        
+           </form>
+          </div>
+        </div>
+      
+      
+    </div>
+  </div>
+</div>
+
+<!-- Modal -->
+<div class="modal fade" id="empModal" tabindex="-1"  aria-hidden="true">
+  <div class="modal-dialog modal-dialog-centered">
+    <div class="modal-content" style="border: 0;">
+      <div class="modal-header">
+        <h5 class="modal-title" id="exampleModalLabel">Résultat du prédiction</h5>
+        <!-- <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button> -->
+      </div>
+      <div class="modal-body" style="background-color: #343b50;" >
+        
+        
+        <div  id="repons"></div>
+        
+        
+            <!-- <div class="row mt-3"><p class="card-text text-white" >Clustering </p></div> 
+            <div class="row mt-3">
+            <div class="col-6"><p class="card-text text-white" >Numéro de Cluster :</p>
+            </div>
+            <div class="col-6"><p class="card-text text-white " style="font-weight: bold;" >0</p>
+            </div>        
+            </div>
+            <div class="row mt-3">
+            <div class="col-6"><p class="card-text text-white" >Sentiments :</p>
+            </div>
+            <div class="col-6"><p class="card-text text-white " style="font-weight: bold;" >Joie</p>
+            </div>        
+            </div>
+            <div class="row mt-3">
+            <div class="col-6"><p class="card-text text-white" >Attitude :</p>
+            </div>
+            <div class="col-6"><p class="card-text text-white " style="font-weight: bold;" >Neutre & Amical</p>
+            </div>        
+            </div>
+            <div class="row mt-3"><p class="card-text text-white" >Regle d'Association</p></div> 
+            <div class="row mt-3">
+            <div class="col-6"><p class="card-text text-white" >Confiance :</p>
+            </div>
+            <div class="col-6"><p class="card-text text-white " style="font-weight: bold;" >80%</p>
+            </div>        
+            </div>
+            <div class="row mt-3">
+            <div class="col-6"><p class="card-text text-white" >Attitude :</p>
+            </div>
+            <div class="col-6"><p class="card-text text-white " style="font-weight: bold;" >Neutre & Amical</p>
+            </div>         -->
+            
+            </div>
+      
+      <div class="modal-footer" style="background-color: #343b50; border-top: 0;">
+        <button type="button" class="btn btn-secondary" data-bs-dismiss="modal" style="font-weight: bold;">Close</button>
+      </div>
+    </div>
+  </div>
+</div>
+
+<div class="footer">
+  <p style="color: #ffffff;">Copyright © Analysis of learners' behaviors and emotions in an online course 2021</p>
+</div>   
+  
+   <script>
+    
+    
+    $(document).ready(function() {
+      
+      $("#Namemodel option:contains({{last}})").attr('selected', true);
+      console.log('{{ niveau  }}')
+      
+      if ('{{ niveau  }}' == 'p') {
+      $("#niveau").text("Polarité"); $("#niveaupred").text("Polarité");}
+      if ('{{ niveau  }}' == 's') {
+      $("#niveau").text("Sentiment");$("#niveaupred").text("Sentiment");}
+      if ('{{ niveau  }}'== 'a') {
+      $("#niveau").text("Aspect");$("#niveaupred").text("Aspect");}
+      if ('{{ niveau  }}' == 'at') {
+      $("#niveau").text("Attitude");$("#niveaupred").text("Attitude");}
+      if ('{{ niveau  }}' == 'vv') {
+      $("#niveau").text("Valeur"); $("#niveaupred").text("Valeur");}
+      if ('{{ niveau  }}' == 'e') {
+      $("#niveau").text("Attente"); $("#niveaupred").text("Attente");}
+      //----------------------------------
+      $("#classifieur").text('{{classifieur}}'.toUpperCase());
+    
+      if ('{{represent}}' == '11') {
+      $("#represent").text("Uni-gram");}
+      if ('{{represent}}' == '22') {
+      $("#represent").text("Bi-gram");}
+      if ('{{represent}}' == '12') {
+      $("#represent").text("Uni-gram & Bi-gram");}
+      if ('{{represent}}' == '33') {
+      $("#represent").text("Tri-gram");}
+      if ('{{represent}}'== '13') {
+      $("#represent").text("Uni-gram & Bi-gram & Tri-gram")}
+      //-----------------------------
+      $("#test").text('{{test}}'+" %");
+
+      
+      var name
+      $("#Namemodel").change(function() {
+      name =  $("#Namemodel").find('option:selected').text();
+      console.log(name);
+      //$('#applique').click(); 
+      $.ajax({
+             type : "POST", 
+             url: "{% url 'change_modele' %}",
+             data: {
+              Nom : name,
+              csrfmiddlewaretoken: '{{ csrf_token }}',
+              dataType: "json",
+      
+             },
+             
+             success: function(data){
+               console.log(data.niveau);
+               if (data.niveau == 'p') {
+               $("#niveau").text("Polarité");$("#niveaupred").text("Polarité");}
+               if (data.niveau == 's') {
+               $("#niveau").text("Sentiment");$("#niveaupred").text("Sentiment");}
+               if (data.niveau == 'a') {
+               $("#niveau").text("Aspect");$("#niveaupred").text("Aspect");}
+               if (data.niveau == 'at') {
+               $("#niveau").text("Attitude");$("#niveaupred").text("Attitude");}
+               if ('{{ niveau  }}' == 'vv') {
+               $("#niveau").text("Valeur"); $("#niveaupred").text("Valeur");}
+               if ('{{ niveau  }}' == 'e') {
+               $("#niveau").text("Attente"); $("#niveaupred").text("Attente");}
+               
+               //----------------------------------
+               $("#classifieur").text(data.classifieur.toUpperCase());
+              
+               if (data.represent == '11') {
+               $("#represent").text("Uni-gram");}
+               if (data.represent == '22') {
+               $("#represent").text("Bi-gram");}
+               if (data.represent == '12') {
+               $("#represent").text("Uni-gram & Bi-gram");}
+               if (data.represent == '33') {
+               $("#represent").text("Tri-gram");}
+               if (data.represent == '13') {
+               $("#represent").text("Uni-gram & Bi-gram & Tri-gram");}
+
+               //-----------------------------
+               $("#test").text(data.test+" %");
+                  
+               $('#myTable').find("tr:gt(0)").remove();
+               if(data.niveau=="p"){
+               var row = $('<tr><td> Positive</td><td>' + data.positive[0]+ '</td><td>' + data.positive[1]+ '</td><td>' + data.positive[2]+ '</td></tr>');
+               $('#myTable').append(row);
+               row = $('<tr><td> Négative</td><td>' + data.negative[0]+ '</td><td>' + data.negative[1]+ '</td><td>' + data.negative[2]+ '</td></tr>');
+               $('#myTable').append(row);
+               row = $('<tr><td> Neutre</td><td>' + data.neutre[0]+ '</td><td>' + data.neutre[1]+ '</td><td>' + data.neutre[2]+ '</td></tr>');
+               $('#myTable').append(row);}
+
+               if(data.niveau=="at"){
+               var row = $('<tr><td> Neutre</td><td>' + data.neutre[0]+ '</td><td>' + data.neutre[1]+ '</td><td>' + data.neutre[2]+ '</td></tr>');
+               $('#myTable').append(row);
+               row = $('<tr><td> Amical</td><td>' + data.amical[0]+ '</td><td>' + data.amical[1]+ '</td><td>' + data.amical[2]+ '</td></tr>');
+               $('#myTable').append(row);
+               row = $('<tr><td> Hostile</td><td>' + data.hostile[0]+ '</td><td>' + data.hostile[1]+ '</td><td>' + data.hostile[2]+ '</td></tr>');
+               $('#myTable').append(row);}
+              console.log(data.niveau)
+              if(data.niveau=="a"){
+              var row = $('<tr><td> Structure</td><td>' + data.structure[0]+ '</td><td>' + data.structure[1]+ '</td><td>' + data.structure[2]+ '</td></tr>');
+               $('#myTable').append(row);
+               row = $('<tr><td> Présentation</td><td>' + data.presentation[0]+ '</td><td>' + data.presentation[1]+ '</td><td>' + data.presentation[2]+ '</td></tr>');
+               $('#myTable').append(row);
+               row = $('<tr><td> Communication</td><td>' + data.communication[0]+ '</td><td>' + data.communication[1]+ '</td><td>' + data.communication[2]+ '</td></tr>');
+               $('#myTable').append(row);
+               row = $('<tr><td> Contenu</td><td>' + data.contenu[0]+ '</td><td>' + data.contenu[1]+ '</td><td>' + data.contenu[2]+ '</td></tr>');
+               $('#myTable').append(row);
+               row = $('<tr><td> Design</td><td>' + data.design[0]+ '</td><td>' + data.design[1]+ '</td><td>' + data.design[2]+ '</td></tr>');
+               $('#myTable').append(row);
+               row = $('<tr><td> Général</td><td>' + data.general[0]+ '</td><td>' + data.general[1]+ '</td><td>' + data.general[2]+ '</td></tr>');
+               $('#myTable').append(row);
+               }
+
+               if(data.niveau=="s"){
+              var row = $('<tr><td> Joie</td><td>' + data.joie[0]+ '</td><td>' + data.joie[1]+ '</td><td>' + data.joie[2]+ '</td></tr>');
+               $('#myTable').append(row);
+               row = $('<tr><td> Mécontentement</td><td>' + data.mecontentement[0]+ '</td><td>' + data.mecontentement[1]+ '</td><td>' + data.mecontentement[2]+ '</td></tr>');
+               $('#myTable').append(row);
+               row = $('<tr><td> Anxiété </td><td>' + data.anxiete[0]+ '</td><td>' + data.anxiete[1]+ '</td><td>' + data.anxiete[2]+ '</td></tr>');
+               $('#myTable').append(row);
+               row = $('<tr><td> Colère</td><td>' + data.colere[0]+ '</td><td>' + data.colere[1]+ '</td><td>' + data.colere[2]+ '</td></tr>');
+               $('#myTable').append(row);
+               row = $('<tr><td> Ennui </td><td>' + data.ennui[0]+ '</td><td>' + data.ennui[1]+ '</td><td>' + data.ennui[2]+ '</td></tr>');
+               $('#myTable').append(row);
+               row = $('<tr><td> Confusion</td><td>' + data.confusion[0]+ '</td><td>' + data.confusion[1]+ '</td><td>' + data.confusion[2]+ '</td></tr>');
+               $('#myTable').append(row);
+               var row = $('<tr><td> Neutre</td><td>' + data.neutre[0]+ '</td><td>' + data.neutre[1]+ '</td><td>' + data.neutre[2]+ '</td></tr>');
+               $('#myTable').append(row);
+               
+               }
+
+               if(data.niveau=="vv"){
+              var row = $('<tr><td> Intrinsèque</td><td>' + data.intrinseque[0]+ '</td><td>' + data.intrinseque[1]+ '</td><td>' + data.intrinseque[2]+ '</td></tr>');
+               $('#myTable').append(row);
+               row = $('<tr><td> Utilité</td><td>' + data.utilite[0]+ '</td><td>' + data.utilite[1]+ '</td><td>' + data.utilite[2]+ '</td></tr>');
+               $('#myTable').append(row);
+               row = $('<tr><td> Accomplissement</td><td>' + data.accomplissement[0]+ '</td><td>' + data.accomplissement[1]+ '</td><td>' + data.accomplissement[2]+ '</td></tr>');
+               $('#myTable').append(row);
+               row = $('<tr><td> Cout</td><td>' + data.cout[0]+ '</td><td>' + data.cout[1]+ '</td><td>' + data.cout[2]+ '</td></tr>');
+               $('#myTable').append(row);
+               var row = $('<tr><td> Neutre</td><td>' + data.neutre[0]+ '</td><td>' + data.neutre[1]+ '</td><td>' + data.neutre[2]+ '</td></tr>');
+               $('#myTable').append(row);
+               }
+
+               if(data.niveau=="e"){
+               var row = $('<tr><td> Positive</td><td>' + data.positive[0]+ '</td><td>' + data.positive[1]+ '</td><td>' + data.positive[2]+ '</td></tr>');
+               $('#myTable').append(row);
+               row = $('<tr><td> Négative</td><td>' + data.negative[0]+ '</td><td>' + data.negative[1]+ '</td><td>' + data.negative[2]+ '</td></tr>');
+               $('#myTable').append(row);
+               row = $('<tr><td> Neutre</td><td>' + data.neutre[0]+ '</td><td>' + data.neutre[1]+ '</td><td>' + data.neutre[2]+ '</td></tr>');
+               $('#myTable').append(row);}
+               
+               $("#myTable").css("visibility", "visible");
+               $("#myTable").css("display", "table");
+
+             },
+      
+             failure: function() {
+                 
+             }  
+             
+            });
+      
+       });
+     
+
+      $('#form').on('submit', function(e){
+          
+      e.preventDefault();
+      
+        $.ajax({
+             type : "POST", 
+             url: "{% url 'ajax_posting' %}",
+             data: {
+              commentaire : $('#commentaire').val(),
+              modele : $("#Namemodel").find('option:selected').text(),
+              csrfmiddlewaretoken: '{{ csrf_token }}',
+              dataType: "json",
+      
+             },
+             
+             success: function(data){
+                // Add response in Modal body
+                $('#repons').html(data.msg).css({"font-weight":" bold","color": "white"});
+                // Display Modal
+                $('#exampleModal').modal('hide'); 
+                $('#empModal').modal('show'); 
+                $('#commentaire').val('');
+             },
+      
+             failure: function() {
+                 
+             }
+      
+      
+         });
+      
+        });
+    
+  });    
+   </script>
+  </body>
+</html>

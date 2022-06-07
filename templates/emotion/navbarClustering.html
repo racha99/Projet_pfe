@@ -1,0 +1,31 @@
+<style>
+   
+    /*code to change background color*/
+    .navbar-nav>.active>a {
+        color: #FFFFFF;
+    }
+</style>
+
+
+<nav class="navbar navbar-expand-lg navbar-dark" style="background-color: #343B50;">
+    <div class="collapse navbar-collapse justify-content-md-center" id="navbarNav">
+
+        <ul class="navbar-nav  ">
+            <li class="nav-item active ">
+                <a class="nav-link px-6" href="{% url 'clusteringkmeans' %}">Kmeans <span class="sr-only">
+                    (current)
+                </span></a>
+            </li>
+            <li class="nav-item">
+                <a class="nav-link" href="{% url 'clusteringKmodes' %}" >kmodes</a>
+            </li>
+        </ul>
+    </div>
+</nav>
+
+<script>
+    $(document).ready(function () {
+            $('li.active').removeClass('active');
+            $('a[href="' + location.pathname + '"]').closest('li').addClass('active');
+        });
+</script>
