@@ -12,7 +12,7 @@
     <script src="https://cdnjs.cloudflare.com/ajax/libs/twitter-bootstrap/3.3.7/js/bootstrap.min.js"></script>
     <script src="https://npmcdn.com/tether@1.2.4/dist/js/tether.min.js">
     </script>
-    
+    <script src="https://unpkg.com/chartjs-gauge@0.3.0/dist/chartjs-gauge.js"></script>
   
     <title>Dashboard</title>
     <style>
@@ -250,6 +250,25 @@
          </div>
 
          <div class="row">
+          <div class="col-lg-6">
+            <div class="card card-chart  mb-3">
+                 <div class="card-body">
+                     <div class="chart-area">
+                         <canvas id="bar-chartpa"></canvas>
+                     </div>
+                </div>
+            </div>
+           </div> 
+           <div class="col-lg-6">
+            <div class="card card-chart  mb-3">
+                 <div class="card-body">
+                    <br><br>
+                    {% load static %}
+                    <img src="{% static '/images/wordcloud.png' %}" alt="My image" style="width:100%">
+
+                </div>
+            </div>
+           </div>
            <div class="col-lg-6">
                <div class="card card-chart  mb-3">
                    <div class="card-body">
@@ -259,6 +278,48 @@
                    </div>
               </div>
            </div>
+
+           <div id="canvas-holder" style="width:100%">
+            <canvas id="chart"></canvas>
+           </div>
+          
+          
+             <script >
+                  var ctx = document.getElementById("chart").getContext("2d");
+          
+          var chart = new Chart(ctx, {
+            type: 'gauge',
+            data: {
+              datasets: [{
+                value: 0.5,
+                minValue: 0,
+                data: [1, 2, 3, 4],
+                backgroundColor: ['green', 'yellow', 'orange', 'red'],
+              }]
+            },
+            options: {
+              needle: {
+                radiusPercentage: 2,
+                widthPercentage: 3.2,
+                lengthPercentage: 80,
+                color: 'rgba(0, 0, 0, 1)'
+              },
+              valueLabel: {
+                display: true,
+                formatter: (value) => {
+                  return '$' + Math.round(value);
+                },
+                color: 'rgba(255, 255, 255, 1)',
+                backgroundColor: 'rgba(0, 0, 0, 1)',
+                borderRadius: 5,
+                padding: {
+                  top: 10,
+                  bottom: 10
+                }
+              }
+            }
+          });
+              </script>
 
            <div class="col-lg-6">
                 <div class="card card-chart  mb-3">
@@ -507,7 +568,43 @@
 
         });
 
-       
+        new Chart(document.getElementById("bar-chartpa"), {
+                type: 'bar',
+                data: {
+                    labels: {{ keys_Ag | safe }},
+                    datasets: [
+                        {
+                            label:'Positive',
+                            backgroundColor:'#FD6C9E',
+                            data: {{ listvaluespa_P | safe }},
+                              
+                        },
+                        {
+                            label: 'Négative',
+                            backgroundColor: '#AF7AC5',
+                            data: {{ listvaluespa_N | safe }},
+                              
+                        },
+                        {
+                            label: 'Neutre',
+                            backgroundColor: '#5DADE2',
+                            data: {{ listvaluespa_NE | safe }},
+                              
+                        }
+                ],
+                    
+                },
+                options: {
+                        title: {
+                             display: true,
+                             text: 'Nombre de commentaires par Polarité pour chaque Aspect',
+                        }
+
+
+
+                }
+   
+        });
 
         new Chart(document.getElementById("bar-chartg"), {
                 type: 'bar',

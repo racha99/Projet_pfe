@@ -65,6 +65,13 @@ from skmultilearn.adapt import MLkNN
 from sklearn.model_selection import GridSearchCV
 import numpy as np
 from scipy.sparse import lil_matrix
+import sys
+from wordcloud import WordCloud
+
+def is_ajax(request):
+    return request.META.get('HTTP_X_REQUESTED_WITH') == 'XMLHttpRequest'
+
+
 
 def Home(request):
     context = {}
@@ -485,7 +492,7 @@ def classification_model(nv,classi,rep):
 
 def corpus_pretraitement(request):
  
- if request.is_ajax():
+ if is_ajax(request):
         filt = request.POST.get('filtrage', None) # getting data from first_name input 
         lem = request.POST.get('lemmatisation', None)
         vide = request.POST.get('mots', None)
@@ -511,7 +518,7 @@ def corpus_pretraitement(request):
 
 def modele_creation(request):
  
- if request.is_ajax():
+ if is_ajax(request):
         data = json.loads(request.POST.get('donnee',None))
         for some_variable in data:
           if some_variable['name'] == 'F':
@@ -923,7 +930,7 @@ def attente_prediction(a):
 
 def ajax_posting(request):
  
- if request.is_ajax():
+ if is_ajax(request):
         response = {'msg':""}
         commentaire = request.POST.get('commentaire', None) # getting data 
         modele = request.POST.get('modele', None) # getting data
@@ -1192,8 +1199,36 @@ def results(request):
     out = data.values.tolist()
     totalCom=len(data.index)
     
-  
-#zzz
+ #WordCloud 
+    # Iterating through data
+    exclure_mots = ['d', 'du', 'de', 'la', 'des', 'le', 'et', 'est', 'elle', 'une', 'en', 'que', 'aux', 'qui', 'ces', 'les', 'dans', 'sur', 'l', 'un', 'pour', 'par', 'il', 'ou', 'à', 'ce', 'a', 'sont', 'cas', 'plus', 'leur', 'se', 's', 'vous', 'au', 'c', 'aussi', 'toutes', 'autre', 'comme', 'mais', 'pas', 'ou']
+
+    comment_words = " "
+    for i in data['Commentaire']: 
+      i = str(i) 
+      separate = i.split() 
+      for j in range(len(separate)): 
+        separate[j] = separate[j].lower() 
+      
+      comment_words += " ".join(separate)+" " 
+    
+    # Creating the Word Cloud
+    final_wordcloud = WordCloud(width = 800, height = 800, 
+                background_color ='black',
+                stopwords = exclure_mots,  
+                min_font_size = 5).generate(comment_words)
+
+    # Displaying the WordCloud                    
+    plt.figure(figsize = (10, 10), facecolor = None) 
+    plt.imshow(final_wordcloud) 
+    plt.axis("off") 
+    plt.tight_layout(pad = 0) 
+        
+    #plt.show()
+    # Save the image in the img folder:
+    final_wordcloud.to_file("static/images/wordcloud.png")
+
+
     module=[]
     for x in data["Module"]:
         module.append(x)
@@ -1249,22 +1284,22 @@ def results(request):
 
     app= data.groupby(["Présentation","Polarité"],as_index=False)['Commentaire'].count()
     app = app.rename(columns={'Polarité':'Polaritép'})
-    print (app)
+
     apc= data.groupby(["Contenu","Polarité"],as_index=False)['Commentaire'].count()
     apc = apc.rename(columns={'Polarité':'Polaritéc'})
-    print (apc)
+
     apd= data.groupby(["Design","Polarité"],as_index=False)['Commentaire'].count()
     apd = apd.rename(columns={'Polarité':'Polaritéd'})
-    print (apd)
+
     apg= data.groupby(["Général","Polarité"],as_index=False)['Commentaire'].count()
     apg = apg.rename(columns={'Polarité':'Polaritég'})
-    print (apg)
+
     apco= data.groupby(["Communication","Polarité"],as_index=False)['Commentaire'].count()
     apco = apco.rename(columns={'Polarité':'Polaritéco'})
-    print (apco)
+
     aps= data.groupby(["Structure","Polarité"],as_index=False)['Commentaire'].count()
     aps = aps.rename(columns={'Polarité':'Polarités'})
-    print (aps)
+
 
  
     
@@ -1280,7 +1315,6 @@ def results(request):
     aspect_g = [] 
     for x in g["Aspect"]:
         aspect_g.append(x)
-    print (aspect_g)
 
     aspect_pol = [] 
     for x in app["Présentation"]:
@@ -1295,11 +1329,10 @@ def results(request):
         if x == 1 : aspect_pol.append('S')
     for x in apco["Communication"]:
         if x == 1 : aspect_pol.append('Co')
-    print (aspect_pol)
 
      
     listkeys_AgStat=dict(Counter(aspect_g)).keys()
-    print (listkeys_AgStat)
+
   
     
 
@@ -1309,16 +1342,117 @@ def results(request):
     print (listkeys_Ag)
 
 
-   
+
+    list_P1= app[app["Polaritép"]=="P"]
+    list_P1= list_P1[list_P1["Présentation"]==1]
+    print ('list_P1 : ',list_P1)
+    list_P2= apc[apc["Polaritéc"]=="P"]
+    list_P2= list_P2[list_P2["Contenu"]==1]
+    print ('list_P2 : ',list_P2)
+    list_P3= aps[aps["Polarités"]=="P"]
+    list_P3= list_P3[list_P3["Structure"]==1]
+    print ('list_P3 : ',list_P3)
+    list_P4= apco[apco["Polaritéco"]=="P"]
+    list_P4= list_P4[list_P4["Communication"]==1]
+    print ('list_P4 : ',list_P4)
+    list_P5= apd[apd["Polaritéd"]=="P"]
+    list_P5= list_P5[list_P5["Design"]==1]
+    print ('list_P5 : ',list_P5)
+    list_P6= apg[apg["Polaritég"]=="P"]
+    list_P6= list_P6[list_P6["Général"]==1]
+    print ('list_P6 : ',list_P6)
+
+    listvaluespa_P = [] 
+    for x in list_P2["Commentaire"]:
+      listvaluespa_P.append(x)
+    for x in list_P4["Commentaire"]:
+      listvaluespa_P.append(x)
+    for x in list_P5["Commentaire"]:
+      listvaluespa_P.append(x)
+    for x in list_P6["Commentaire"]:
+      listvaluespa_P.append(x)
+    for x in list_P1["Commentaire"]:
+      listvaluespa_P.append(x)
+    for x in list_P3["Commentaire"]:
+      listvaluespa_P.append(x)
+    print ('listvaluespa_P : ', listvaluespa_P)
+
+
+    list_N1= app[app["Polaritép"]=="N"]
+    list_N1= list_N1[list_N1["Présentation"]==1]
+    print ('list_N1 : ',list_N1)
+    list_N2= apc[apc["Polaritéc"]=="N"]
+    list_N2= list_N2[list_N2["Contenu"]==1]
+    print ('list_N2 : ',list_N2)
+    list_N3= aps[aps["Polarités"]=="N"]
+    list_N3= list_N3[list_N3["Structure"]==1]
+    print ('list_N3 : ',list_N3)
+    list_N4= apco[apco["Polaritéco"]=="N"]
+    list_N4= list_N4[list_N4["Communication"]==1]
+    print ('list_N4 : ',list_N4)
+    list_N5= apd[apd["Polaritéd"]=="N"]
+    list_N5= list_N5[list_N5["Design"]==1]
+    print ('list_N5 : ',list_N5)
+    list_N6= apg[apg["Polaritég"]=="N"]
+    list_N6= list_N6[list_N6["Général"]==1]
+    print ('list_N6 : ',list_N6)
+
+    listvaluespa_N = [] 
+    for x in list_N2["Commentaire"]:
+      listvaluespa_N.append(x)
+    for x in list_N4["Commentaire"]:
+      listvaluespa_N.append(x)
+    for x in list_N5["Commentaire"]:
+      listvaluespa_N.append(x)
+    for x in list_N6["Commentaire"]:
+      listvaluespa_N.append(x)
+    for x in list_N1["Commentaire"]:
+      listvaluespa_N.append(x)
+    for x in list_N3["Commentaire"]:
+      listvaluespa_N.append(x)
+    print ('listvaluespa_N : ',listvaluespa_N)
+
+    list_NE1= app[app["Polaritép"]=="NE"]
+    list_NE1= list_NE1[list_NE1["Présentation"]==1]
+    print ('list_NE1 : ',list_NE1)
+    list_NE2= apc[apc["Polaritéc"]=="NE"]
+    list_NE2= list_NE2[list_NE2["Contenu"]==1]
+    print ('list_NE2 : ',list_NE2)
+    list_NE3= aps[aps["Polarités"]=="NE"]
+    list_NE3= list_NE3[list_NE3["Structure"]==1]
+    print ('list_NE3 : ',list_NE3)
+    list_NE4= apco[apco["Polaritéco"]=="NE"]
+    list_NE4= list_NE4[list_NE4["Communication"]==1]
+    print ('list_NE4 : ',list_NE4)
+    list_NE5= apd[apd["Polaritéd"]=="NE"]
+    list_NE5= list_NE5[list_NE5["Design"]==1]
+    print ('list_NE5 : ',list_NE5)
+    list_NE6= apg[apg["Polaritég"]=="NE"]
+    list_NE6= list_NE6[list_NE6["Général"]==1]
+    print ('list_NE6 : ',list_NE6)
+
+    listvaluespa_NE = [] 
+    for x in list_NE2["Commentaire"]:
+      listvaluespa_NE.append(x)
+    for x in list_NE4["Commentaire"]:
+      listvaluespa_NE.append(x)
+    for x in list_NE5["Commentaire"]:
+      listvaluespa_NE.append(x)
+    for x in list_NE6["Commentaire"]:
+      listvaluespa_NE.append(x)
+    for x in list_NE1["Commentaire"]:
+      listvaluespa_NE.append(x)
+    for x in list_NE3["Commentaire"]:
+      listvaluespa_NE.append(x)
+    print ('listvaluespa_NE : ', listvaluespa_NE)
+
     list_P= g[g["Polarité"]=="P"]
-    print (list_P)
     list_N= g[g["Polarité"]=="N"]
     list_NE= g[g["Polarité"]=="NE"]
 
     
 
     listvaluesg_P=list_P["Commentaire"].tolist()
-    print (listvaluesg_P)
     listvaluesg_N=list_N["Commentaire"].tolist()
     listvaluesg_NE=list_NE["Commentaire"].tolist()
 
@@ -1603,6 +1737,7 @@ def results(request):
       else: 
         j='Communication'
         listkeysAg.append(j)
+     
     
     listkeysAgs=[]
     for i in listkeys_Ags:
@@ -1686,12 +1821,20 @@ def results(request):
         'emoNdom':emoN_dom,
         'attiDom':atti_dom,
         'attiNdom':attiN_dom,
+
         'keys_Ag':listkeysAg,
+
         'listkeys_Ags':listkeysAgs,
         'listkeys_Agt':listkeysAgt,
+
         'listvaluesg_P':listvaluesg_P,
         'listvaluesg_N':listvaluesg_N,
         'listvaluesg_NE':listvaluesg_NE,
+  
+        'listvaluespa_P':listvaluespa_P,
+        'listvaluespa_N':listvaluespa_N,
+        'listvaluespa_NE':listvaluespa_NE,
+
         'listvaluess_J':listvaluess_J,
         'listvaluess_M':listvaluess_M,
         'listvaluess_NE':listvaluess_NE,
