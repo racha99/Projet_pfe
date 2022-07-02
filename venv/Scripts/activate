@@ -37,7 +37,7 @@ deactivate () {
 # unset irrelevant variables
 deactivate nondestructive
 
-VIRTUAL_ENV="E:\bureau2\burreau 30_3\PFE_sentiment_analysis-master\venv"
+VIRTUAL_ENV="C:\Users\ASUS\Desktop\PFE_sentiment_analysis-master/venv"
 export VIRTUAL_ENV
 
 _OLD_VIRTUAL_PATH="$PATH"

@@ -1,0 +1,299 @@
+<!DOCTYPE html>
+ <html>
+
+ <head>
+    <meta charset="UTF-8">
+    <link rel="stylesheet" href="https://stackpath.bootstrapcdn.com/bootstrap/4.1.3/css/bootstrap.min.css"
+        integrity="sha384-MCw98/SFnGE8fJT3GXwEOngsV7Zt27NXFoaoApmYm81iuXoPkFOJwJ8ERdknLPMO" crossorigin="anonymous">
+    <script src="https://cdn.jsdelivr.net/npm/chart.js@2.9.4/dist/Chart.min.js"></script>
+    <script>src = "https://cdnjs.cloudflare.com/ajax/libs/jquery/3.1.0/jquery.min.js"</script>
+    <script src="https://ajax.googleapis.com/ajax/libs/jquery/2.1.1/jquery.min.js">
+    </script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/twitter-bootstrap/3.3.7/js/bootstrap.min.js"></script>
+    <script src="https://npmcdn.com/tether@1.2.4/dist/js/tether.min.js">
+    </script>
+    <script src="https://unpkg.com/chartjs-gauge@0.3.0/dist/chartjs-gauge.js"></script>
+    
+  
+    <title>Dashboard</title>
+    <style>
+        .my-custom-scrollbar {
+                  position: relative;
+                  height: 400px;
+                  overflow:auto;
+        }
+       .table-wrapper-scroll-y {
+                  display: block;
+        }
+      
+        .table thead {
+            background-color: #4bc0c0;}
+        .div-scrollbar {
+                  position: relative;
+                  height: 400px;
+                  overflow:auto;
+        }
+       .div-wrapper-scroll-y {
+                  display: block;
+        }
+
+        
+    </style>
+  </head>
+
+ <body style="background-color: white">
+    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.0.2/dist/js/bootstrap.bundle.min.js" integrity="sha384-MrcW6ZMFYlzcLA8Nl+NtUVF0sA7MsXsP1UyJoMp4YLEuNSfAP+JcXn/tWtIaxVXM" crossorigin="anonymous"></script>
+
+    
+    <div class="dropdown">
+      <form action={% url 'select_niv' %} method="POST">
+          {% csrf_token %}
+          <div class>
+              <li><button  class="dropdown-item" name="niveau" value='1CP' href="#">1CP</button></li>
+              <li><button  class="dropdown-item" name="niveau" value='2CP' href="#">2CP</button></li>
+              <li><button  class="dropdown-item" name="niveau" value='1CS' href="#">1CS</button></li>
+              <li><button  class="dropdown-item" name="niveau" value='2CS' href="#">2CS</button></li>
+              <li><button  class="dropdown-item" name="niveau" value='3CS' href="#">3CS</button></li>
+          </div>
+      </form>
+    </div> 
+
+         <div class="row">
+          <div class="col-lg-6">
+            <div class="card card-chart  mb-3">
+                 <div class="card-body">
+                     <div class="chart-area">
+                         <canvas id="gaugeP"></canvas>
+                     </div>
+                </div>
+            </div>
+           </div> 
+ 
+          <div class="col-lg-6">
+            <div class="card card-chart  mb-3">
+                 <div class="card-body">
+                     <div class="chart-area">
+                         <canvas id="bar-chartpm"></canvas>
+                     </div>
+                </div>
+            </div>
+           </div> 
+       </div> 
+       <div class="col-lg-6">
+        <div class="card card-chart  mb-3">
+             <div class="card-body">
+                <br><br>
+                {% load static %}
+                <img src="{% static '/images/wordcloudall.png' %}" alt="My image" style="width:100%">
+
+            </div>
+        </div>
+       </div>
+    </div>
+</div>
+</div>
+<div>
+ <table class="table mb-0">
+        <caption>1CP</caption>
+        <tbody>
+            <tr>
+                {% for m in mod_1cp %}
+                  <td> <a href="{{ m.get_absolute_url }}" class="btn btn-primary">{{ m.titre }}</a></td>
+               {% endfor %}
+            </tr>
+        </tbody>
+ </table>
+ <table class="table mb-0">
+    <caption>2CP</caption>
+    <tbody>
+        <tr>
+            {% for m in mod_2cp %}
+            <td> <a href="{{ m.get_absolute_url }}" class="btn btn-primary">{{ m.titre }}</a></td>
+          {% endfor %}
+        </tr>
+    </tbody>
+</table>
+<table class="table mb-0">
+    <caption>1CS</caption>
+    <tbody>
+        <tr>
+            {% for m in mod_1cs %}
+            <tr>
+                <td> <a href="{{ m.get_absolute_url }}" class="btn btn-primary">{{ m.titre }}</a></td>
+            </tr>
+          {% endfor %}
+        </tr>
+    </tbody>
+</table>
+<table class="table mb-0">
+    <caption>2CS</caption>
+        <tr>
+          <th>SIT</th>
+        </tr>
+        <tr>
+          {% for m in mod_2cs_sit %}
+          <td> <a href="{{ m.get_absolute_url }}" class="btn btn-primary">{{ m.titre }}</a></td>
+          {% endfor %}
+        </tr>
+        <tr>
+            <th>SIL</th>
+        </tr>
+        <tr>
+            {% for m in mod_2cs_sil %}
+            <td> <a href="{{ m.get_absolute_url }}" class="btn btn-primary">{{ m.titre }}</a></td>
+            {% endfor %}
+          </tr>
+        <tr>
+            <th>SIQ</th>
+        </tr>
+        <tr>
+            {% for m in mod_2cs_siq %}
+            <td> <a href="{{ m.get_absolute_url }}" class="btn btn-primary">{{ m.titre }}</a></td>
+            {% endfor %}
+          </tr>
+    
+</table>
+<table class="table mb-0">
+    <caption>3CS</caption>
+        <tr>
+          <th>SIT</th>
+        </tr>
+        <tr>
+          {% for m in mod_3cs_sit %}
+          <td> <a href="{{ m.get_absolute_url }}" class="btn btn-primary">{{ m.titre }}</a></td>
+          {% endfor %}
+        </tr>
+        <tr>
+            <th>SIL</th>
+        </tr>
+        <tr>
+            {% for m in mod_3cs_sil %}
+            <td> <a href="{{ m.get_absolute_url }}" class="btn btn-primary">{{ m.titre }}</a></td>
+            {% endfor %}
+          </tr>
+        <tr>
+            <th>SIQ</th>
+        </tr>
+        <tr>
+            {% for m in mod_3cs_siq %}
+            <td> <a href="{{ m.get_absolute_url }}" class="btn btn-primary">{{ m.titre }}</a></td>
+            {% endfor %}
+          </tr>
+        </table>
+</div>
+        <script>
+
+              var colorArray = [
+                  '#FD6C9E', '#AF7AC5', '#5DADE2', '#E59866', '#F5B041',
+                  '#AAB7B8', '#F18989', '#06d2a6', '#DFE8AA', '#c45850',
+                  '#E1CE9A', '#87591A', '#9DC025',  '#FD4626', '#87E990',
+                  '#C2F732','#679F5A',  '#40826D',   '#DF73FF', '#C71585',
+                  '#800080','#9683EC','#386F48',    '#FFE4C4',  '#E1CE9A',
+                  '#CC5500', '#DE9816', '#08541E','#08546C',"#4F546C",'#8EADDB',
+                  '#8E84DB','#CFB9F2','#7D7905','#ffe1c2','#c0f9fb',"#d48568",
+                  '#ab5551','#b25d49','#595c48','#f2c796','#d09a8d','#aa5652','#5b7c76',
+                  '#472e34','#533b3b','#6f5066','#ff7e50','#720126','#54000c','#aeadf0',
+                  '#585878','#a56470','#c38d94','#3ef9bc','#16b065','#56e38b','#19d5b1','#1ac9e0',
+                  '#c0e6e8','	#83b3cb','#2d608a','#161f59','#3b537c','#63735a','#443b7c','#7c3b53',
+                  '#7c643b','#103c08','#fec22d','#011a3f','#bbbbbb','#25bfa9','#3b537c','	#7c3b53',
+                  '#fdff00','#00abff','#9600ff','#cc8a3f','#64b4c2'
+                  ];
+        new Chart(document.getElementById("gaugeP"),{
+          type: 'doughnut',
+          data: {
+            labels: ["Positive", "Neutre", "Négative"],
+            datasets: [{
+                label: 'Polarité générale',
+                data: [{{p}}, {{ne}}, {{n}}],
+                backgroundColor: [
+                    'rgba(46, 204, 113, 1)',
+                    'rgba(255, 164, 46, 1)',
+                    'rgba(231, 76, 60, 1)',
+                   
+                ],
+                borderColor: [
+                    'rgba(255, 255, 255 ,1)',
+                    'rgba(255, 255, 255 ,1)',
+                    'rgba(255, 255, 255 ,1)',
+                    
+                ],
+                borderWidth: 10
+            }]
+
+        },
+          options: {
+            rotation: 1 * Math.PI,
+            circumference: 1 * Math.PI,
+            legend: {
+                display: false
+            },
+            tooltip: {
+                enabled: false
+            },
+            cutoutPercentage: 80
+        }
+    });
+   </script>
+
+<script>
+
+    var colorArray = [
+        '#FD6C9E', '#AF7AC5', '#5DADE2', '#E59866', '#F5B041',
+        '#AAB7B8', '#F18989', '#06d2a6', '#DFE8AA', '#c45850',
+        '#E1CE9A', '#87591A', '#9DC025',  '#FD4626', '#87E990',
+        '#C2F732','#679F5A',  '#40826D',   '#DF73FF', '#C71585',
+        '#800080','#9683EC','#386F48',    '#FFE4C4',  '#E1CE9A',
+        '#CC5500', '#DE9816', '#08541E','#08546C',"#4F546C",'#8EADDB',
+        '#8E84DB','#CFB9F2','#7D7905','#ffe1c2','#c0f9fb',"#d48568",
+        '#ab5551','#b25d49','#595c48','#f2c796','#d09a8d','#aa5652','#5b7c76',
+        '#472e34','#533b3b','#6f5066','#ff7e50','#720126','#54000c','#aeadf0',
+        '#585878','#a56470','#c38d94','#3ef9bc','#16b065','#56e38b','#19d5b1','#1ac9e0',
+        '#c0e6e8','	#83b3cb','#2d608a','#161f59','#3b537c','#63735a','#443b7c','#7c3b53',
+        '#7c643b','#103c08','#fec22d','#011a3f','#bbbbbb','#25bfa9','#3b537c','	#7c3b53',
+        '#fdff00','#00abff','#9600ff','#cc8a3f','#64b4c2'
+        ];
+new Chart(document.getElementById("bar-chartpm"), {
+      type: 'bar',
+      data: {
+          labels: {{ listkeys_pol_mod | safe }},
+          datasets: [
+              {
+                  label:'Positive',
+                  backgroundColor:'#FD6C9E',
+                  data: {{ listvalues_P | safe }},
+                    
+              },
+              {
+                  label: 'Négative',
+                  backgroundColor: '#AF7AC5',
+                  data: {{ listvalues_N | safe }},
+                    
+              },
+              {
+                  label: 'Neutre',
+                  backgroundColor: '#5DADE2',
+                  data: {{ listvalues_NE | safe }},
+                    
+              }
+      ],
+          
+      },
+      options: {
+              title: {
+                   display: true,
+                   text: 'Nombre de commentaires par Polarité pour chaque Module',
+              }
+      }
+
+});
+</script>
+   <footer class="sticky-footer" style="background-color: #343B50;">
+    <div class="container my-auto">
+        <div class="copyright text-center my-auto" style="color: white;">
+            <span>Copyright &copy; Analysis of learners' behaviors and emotions in an online course 2021</span>
+        </div>
+    </div>
+   </footer>
+ </body>
+
+ </html>

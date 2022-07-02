@@ -624,7 +624,7 @@ def modele_creation(request):
        
 
 def Classification(request):     
-    path="C:/Users/farida/Desktop/Master et PFE/PFE_sentiment_analysis-master/classification/models"  # insert the path to your directory   
+    path="C:/Users/ASUS/Desktop/PFE_sentiment_analysis-master/classification/models"  # insert the path to your directory   
     files_list =os.listdir(path)
     context={}
     context['files'] = files_list
@@ -746,7 +746,7 @@ def change_modele(request):
     # text = request.GET.get('text')
 
     #zzz
-    path="C:/Users/farida/Desktop/Master et PFE/PFE_sentiment_analysis-master/classification/models"  # insert the path to your directory   
+    path="C:/Users/ASUS/Desktop/PFE_sentiment_analysis-master/classification/models"  # insert the path to your directory   
     files_list =os.listdir(path)
     pathfile = os.path.join(settings.MODELS,nom)
     with open(pathfile,'rb') as p:
