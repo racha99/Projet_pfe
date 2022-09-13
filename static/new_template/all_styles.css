@@ -1,0 +1,18 @@
+/* Error: ("primary": #435ebe, "secondary": #6c757d, "success": #198754, "info": #0dcaf0, "warning": #ffc107, "danger": #dc3545, "light": #f8f9fa, "dark": #212529) isn't a valid CSS value.
+ *     ,
+ * 179 | $theme-colors-rgb: map-loop($theme-colors, to-rgb, "$value") !default !default;
+ *     |                             ^^^^^^^^^^^^^
+ *     '
+ *   scss\_variables.scss 179:29  @import
+ *   all_styles.scss 1:9          root stylesheet */
+
+body::before {
+  font-family: "Source Code Pro", "SF Mono", Monaco, Inconsolata, "Fira Mono",
+      "Droid Sans Mono", monospace, monospace;
+  white-space: pre;
+  display: block;
+  padding: 1em;
+  margin-bottom: 1em;
+  border-bottom: 2px solid black;
+  content: "Error: (\"primary\": #435ebe, \"secondary\": #6c757d, \"success\": #198754, \"info\": #0dcaf0, \"warning\": #ffc107, \"danger\": #dc3545, \"light\": #f8f9fa, \"dark\": #212529) isn't a valid CSS value.\a     \2577 \a 179 \2502  $theme-colors-rgb: map-loop($theme-colors, to-rgb, \"$value\") !default !default;\d\a     \2502                              ^^^^^^^^^^^^^\a     \2575 \a   scss\\_variables.scss 179:29  @import\a   all_styles.scss 1:9          root stylesheet";
+}

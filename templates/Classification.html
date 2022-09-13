@@ -28,32 +28,23 @@
         <div class="collapse navbar-collapse" id="navbarSupportedContent">
           <ul class="navbar-nav me-auto mb-2 mb-lg-0">
             <li class="nav-item">
-              <a class="nav-link "  href="/">Home</a>
+              <a class="nav-link "  href="/">Accueil</a>
             </li>
             <li class="nav-item">
-              <a class="nav-link "  href="/results">Dashboard</a>
+              <a class="nav-link "  href="/results">Data</a>
             </li>
-            <li class="nav-item dropdown">
-              <a class="nav-link  dropdown-toggle" href="/clusteringkmeans" id="navbarDropdown" role="button" data-bs-toggle="dropdown" aria-expanded="false">
-                  Clustering
-              </a>
-              <ul class="dropdown-menu" aria-labelledby="navbarDropdown">
-                <li><a class="dropdown-item " href="/clusteringkmeans">K-means</a></li>
-                <li><a class="dropdown-item" href="clusteringKmodes">K-modes</a></li>
-                
-              </ul>
-            </li> 
+           
             <li class="nav-item">
               <a class="nav-link "  href="/association">Association</a>
             </li>
 
            
             <li class="nav-item">
-              <a class="nav-link " aria-current="page" href="/construction">Apprentissage</a>
+              <a class="nav-link " aria-current="page" href="/construction">Création</a>
             </li>
 
             <li class="nav-item">
-              <a class="nav-link active " aria-current="page" href="/classification">Prédiction</a>
+              <a class="nav-link active " aria-current="page" href="/classification">Evaluation</a>
             </li>
             
           </ul>
@@ -67,7 +58,7 @@
       <div class="row ">
         <div class="col ">
           <div class="card border-primary " style="background-color: #343b50;" >
-            <h5 class="text-white" style="margin-top: 20px; margin-left: 40px;">Modeles de classification</h5>
+            <h5 class="text-white" style="margin-top: 20px; margin-left: 40px;">Modèle</h5>
             <div class="card-body text-primary">
               
              
@@ -75,7 +66,7 @@
               <div class="container "> 
                 <div class="row mt-3">
                   <div class="col-6">
-                    <p class="card-text text-white" >Modele de classification :</p>
+                    <p class="card-text text-white" >Modèle de classification :</p>
                   </div>
                   <div class="col-6">
                     <select id="Namemodel" class="form-select" required aria-label="select example" style="width:15;">
@@ -114,37 +105,8 @@
                 </div>
               </div> 
               
-                <div class="row mt-3">
-                <div class="col-6">
-                  <p class="card-text text-white" >Représentation Sélectionné :</p>
-                </div>
-                <div class="col-6">
-                  <!-- <select id="Repres" class="form-select" required aria-label="select example" style="width:15;">
-                  <option value="1">Unigramme</option>
-                  <option value="2">Bigramme</option>
-                  <option value="3">Trigramme</option>
-                  <option value="12" selected >Unigramme & Bigramme</option>
-                  <option value="123">Unigramme & Bigramme &Trigramme</option>
-                  </select> -->
-                  <p class="card-text text-white " style="font-weight: bold;" id="represent"  > {{represent}}</p>
-                </div>        
-                </div>
-
-                <div class="row mt-3">
-                  <div class="col-6">
-                    <p class="card-text text-white" >Pourcentage test:</p>
-                  </div>
-                  <div class="col-6">
-                    <!-- <select id="Repres" class="form-select" required aria-label="select example" style="width:15;">
-                    <option value="1">Unigramme</option>
-                    <option value="2">Bigramme</option>
-                    <option value="3">Trigramme</option>
-                    <option value="12" selected >Unigramme & Bigramme</option>
-                    <option value="123">Unigramme & Bigramme &Trigramme</option>
-                    </select> -->
-                    <p class="card-text text-white " style="font-weight: bold;" id="test"  > {{test}}%</p>
-                  </div>        
-                  </div>
+                  
+               
               
               <div class="row mt-5" > 
               <div class="col-6"  style="float: right;">  
@@ -165,12 +127,12 @@
                 </div>  
                 <div class="col-6" >  
                   <button  class="md " data-bs-toggle="modal" data-bs-target="#exampleModal"
-                   style="width:auto; margin-left: 15px; float: right; background-color: #4bc0c0; margin: 0px;"  >Prédiction</button>
+                   style="width:auto; margin-left: 15px; float: right; background-color:  #4e73df; margin: 0px;"  >Prédiction</button>
                   </div>  
               </div>
 
              
-              
+            
               
             </div>
             </div>
@@ -183,15 +145,17 @@
         <div class="col">
           <div class="card border-0 my-3 card-table table-responsive" style="width: auto;">  
             <div class="card-body" >
-              <h5  style="margin-bottom: 20px;">Perfermonce du modele</h5>
+              <h5  style="margin-bottom: 20px;">Performances du modèle</h5>
                <table id="myTable" class="table  table-hover  table-bordered mx-auto   ">
-                <tr style="background-color: #4bc0c0;">
+                <tr style="background-color: #4e73df;">
                   <th>Classe</th>
                   <th>Précision</th>
                   <th>Rappel</th>
                   <th>F</th>
+                 
                 </tr>
 
+                
                  {% if positive %}
                   <tr>
                     <td scope="row">Positive</td>
@@ -209,12 +173,17 @@
                     {% endfor %}
                   </tr>
                   {% endif %}
+
+
+
                   {% if structure %}
                   <tr>
                     <td scope="row">Structure</td>
                     {% for c in  structure%}
                     <td scope="col">{{c}}</td>
+                    
                     {% endfor %}
+                    
                   </tr>
                   {% endif %}
                   {% if presentation %}
@@ -264,6 +233,7 @@
                     {% for c in  joie%}
                     <td scope="col">{{c}}</td>
                     {% endfor %}
+                  
                   </tr>
                   {% endif %}
 
@@ -312,14 +282,24 @@
                   </tr>
                   {% endif %}
 
-                  {% if neutre %}
+                  {% if satisfaction %}
                   <tr>
-                    <td scope="row">Neutre</td>
-                    {% for c in  neutre%}
+                    <td scope="row">Satisfaction</td>
+                    {% for c in  satisfaction%}
                     <td scope="col">{{c}}</td>
                     {% endfor %}
                   </tr>
                   {% endif %}
+                
+                  {% if gratitude %}
+                  <tr>
+                    <td scope="row">Gratitude</td>
+                    {% for c in  gratitude%}
+                    <td scope="col">{{c}}</td>
+                    {% endfor %}
+                  </tr>
+                  {% endif %}
+
 
                   {% if amical %}
                   <tr>
@@ -345,6 +325,7 @@
                     {% for c in  intrinseque%}
                     <td scope="col">{{c}}</td>
                     {% endfor %}
+                    
                   </tr>
                   {% endif %}
 
@@ -376,6 +357,63 @@
                   {% endif %}
 
               </table>
+
+            
+              {% if structure %}
+            
+              <table id="myTable2" class="table  table-hover  table-bordered mx-auto   ">
+                <tr style="background-color: #4e73df;">
+                  <th>Hamming score</th>
+                  <th>Hamming loss</th>
+                 
+
+                </tr>
+                <tr >
+                  <td>{{ hamming_score }}</td>
+                  <td>{{ hamming_loss }}</td>
+                 
+
+                </tr>
+              </table>
+              {% endif %}
+
+
+              {% if intrinseque %}
+            
+              <table id="myTable2" class="table  table-hover  table-bordered mx-auto   ">
+                <tr style="background-color: #4bc0c0;">
+                  <th>Hamming score</th>
+                  <th>Hamming loss</th>
+                 
+
+                </tr>
+                <tr >
+                  <td>{{ hamming_score }}</td>
+                  <td>{{ hamming_loss }}</td>
+                 
+
+                </tr>
+              </table>
+              {% endif %}
+
+
+              {% if satisfaction %}
+            
+              <table id="myTable2" class="table  table-hover  table-bordered mx-auto   ">
+                <tr style="background-color: #4bc0c0;">
+                  <th>Hamming score</th>
+                  <th>Hamming loss</th>
+                 
+
+                </tr>
+                <tr >
+                  <td>{{ hamming_score }}</td>
+                  <td>{{ hamming_loss }}</td>
+                 
+
+                </tr>
+              </table>
+              {% endif %}
            </div>
           </div>
           
@@ -415,7 +453,7 @@
               
               <input class="form-control" id="commentaire" type="text" name="title" placeholder="Inroduit un commentaire..." required>
               <div class="invalid-tooltip"> Saisit un commentaire!</div>
-              <button class="btn " type="submit" style="float: right;background-color: #4bc0c0;  border-radius: 5;font-weight: bold;color: white;">Classifier</button>
+              <button class="btn " type="submit" style="float: right;background-color: #4e73df;  border-radius: 5;font-weight: bold;color: white;">Classifier</button>
         
            </form>
           </div>
@@ -495,29 +533,29 @@
       
       if ('{{ niveau  }}' == 'p') {
       $("#niveau").text("Polarité"); $("#niveaupred").text("Polarité");}
-      if ('{{ niveau  }}' == 's') {
+      if ('{{ niveau  }}' == 'ts') {
       $("#niveau").text("Sentiment");$("#niveaupred").text("Sentiment");}
-      if ('{{ niveau  }}'== 'a') {
+      if ('{{ niveau  }}'== 'ta') {
       $("#niveau").text("Aspect");$("#niveaupred").text("Aspect");}
       if ('{{ niveau  }}' == 'at') {
       $("#niveau").text("Attitude");$("#niveaupred").text("Attitude");}
-      if ('{{ niveau  }}' == 'vv') {
+      if ('{{ niveau  }}' == 't') {
       $("#niveau").text("Valeur"); $("#niveaupred").text("Valeur");}
       if ('{{ niveau  }}' == 'e') {
       $("#niveau").text("Attente"); $("#niveaupred").text("Attente");}
       //----------------------------------
       $("#classifieur").text('{{classifieur}}'.toUpperCase());
     
-      if ('{{represent}}' == '11') {
-      $("#represent").text("Uni-gram");}
-      if ('{{represent}}' == '22') {
-      $("#represent").text("Bi-gram");}
-      if ('{{represent}}' == '12') {
-      $("#represent").text("Uni-gram & Bi-gram");}
-      if ('{{represent}}' == '33') {
-      $("#represent").text("Tri-gram");}
-      if ('{{represent}}'== '13') {
-      $("#represent").text("Uni-gram & Bi-gram & Tri-gram")}
+      // if ('{{represent}}' == '11') {
+      // $("#represent").text("Uni-gram");}
+      // if ('{{represent}}' == '22') {
+      // $("#represent").text("Bi-gram");}
+      // if ('{{represent}}' == '12') {
+      // $("#represent").text("Uni-gram & Bi-gram");}
+      // if ('{{represent}}' == '33') {
+      // $("#represent").text("Tri-gram");}
+      // if ('{{represent}}'== '13') {
+      // $("#represent").text("Uni-gram & Bi-gram & Tri-gram")}
       //-----------------------------
       $("#test").text('{{test}}'+" %");
 
@@ -541,13 +579,13 @@
                console.log(data.niveau);
                if (data.niveau == 'p') {
                $("#niveau").text("Polarité");$("#niveaupred").text("Polarité");}
-               if (data.niveau == 's') {
+               if (data.niveau == 'ts') {
                $("#niveau").text("Sentiment");$("#niveaupred").text("Sentiment");}
-               if (data.niveau == 'a') {
+               if (data.niveau == 'ta') {
                $("#niveau").text("Aspect");$("#niveaupred").text("Aspect");}
                if (data.niveau == 'at') {
                $("#niveau").text("Attitude");$("#niveaupred").text("Attitude");}
-               if ('{{ niveau  }}' == 'vv') {
+               if ('{{ niveau  }}' == 't') {
                $("#niveau").text("Valeur"); $("#niveaupred").text("Valeur");}
                if ('{{ niveau  }}' == 'e') {
                $("#niveau").text("Attente"); $("#niveaupred").text("Attente");}
@@ -555,28 +593,31 @@
                //----------------------------------
                $("#classifieur").text(data.classifieur.toUpperCase());
               
-               if (data.represent == '11') {
-               $("#represent").text("Uni-gram");}
-               if (data.represent == '22') {
-               $("#represent").text("Bi-gram");}
-               if (data.represent == '12') {
-               $("#represent").text("Uni-gram & Bi-gram");}
-               if (data.represent == '33') {
-               $("#represent").text("Tri-gram");}
-               if (data.represent == '13') {
-               $("#represent").text("Uni-gram & Bi-gram & Tri-gram");}
+              //  if (data.represent == '11') {
+              //  $("#represent").text("Uni-gram");}
+              //  if (data.represent == '22') {
+              //  $("#represent").text("Bi-gram");}
+              //  if (data.represent == '12') {
+              //  $("#represent").text("Uni-gram & Bi-gram");}
+              //  if (data.represent == '33') {
+              //  $("#represent").text("Tri-gram");}
+              //  if (data.represent == '13') {
+              //  $("#represent").text("Uni-gram & Bi-gram & Tri-gram");}
 
                //-----------------------------
                $("#test").text(data.test+" %");
                   
                $('#myTable').find("tr:gt(0)").remove();
+               $('#myTable2').find("tr:gt(0)").remove();
+               
                if(data.niveau=="p"){
                var row = $('<tr><td> Positive</td><td>' + data.positive[0]+ '</td><td>' + data.positive[1]+ '</td><td>' + data.positive[2]+ '</td></tr>');
                $('#myTable').append(row);
                row = $('<tr><td> Négative</td><td>' + data.negative[0]+ '</td><td>' + data.negative[1]+ '</td><td>' + data.negative[2]+ '</td></tr>');
                $('#myTable').append(row);
                row = $('<tr><td> Neutre</td><td>' + data.neutre[0]+ '</td><td>' + data.neutre[1]+ '</td><td>' + data.neutre[2]+ '</td></tr>');
-               $('#myTable').append(row);}
+               $('#myTable').append(row);
+               }
 
                if(data.niveau=="at"){
                var row = $('<tr><td> Neutre</td><td>' + data.neutre[0]+ '</td><td>' + data.neutre[1]+ '</td><td>' + data.neutre[2]+ '</td></tr>');
@@ -586,50 +627,71 @@
                row = $('<tr><td> Hostile</td><td>' + data.hostile[0]+ '</td><td>' + data.hostile[1]+ '</td><td>' + data.hostile[2]+ '</td></tr>');
                $('#myTable').append(row);}
               console.log(data.niveau)
-              if(data.niveau=="a"){
-              var row = $('<tr><td> Structure</td><td>' + data.structure[0]+ '</td><td>' + data.structure[1]+ '</td><td>' + data.structure[2]+ '</td></tr>');
-               $('#myTable').append(row);
-               row = $('<tr><td> Présentation</td><td>' + data.presentation[0]+ '</td><td>' + data.presentation[1]+ '</td><td>' + data.presentation[2]+ '</td></tr>');
-               $('#myTable').append(row);
-               row = $('<tr><td> Communication</td><td>' + data.communication[0]+ '</td><td>' + data.communication[1]+ '</td><td>' + data.communication[2]+ '</td></tr>');
+              if(data.niveau=="ta"){
+
+              var row = $('<tr><td> Présentation</td><td>' + data.presentation[0]+ '</td><td>' + data.presentation[1]+ '</td><td>' + data.presentation[2]+ '</td></tr>');
                $('#myTable').append(row);
                row = $('<tr><td> Contenu</td><td>' + data.contenu[0]+ '</td><td>' + data.contenu[1]+ '</td><td>' + data.contenu[2]+ '</td></tr>');
                $('#myTable').append(row);
                row = $('<tr><td> Design</td><td>' + data.design[0]+ '</td><td>' + data.design[1]+ '</td><td>' + data.design[2]+ '</td></tr>');
                $('#myTable').append(row);
+               row = $('<tr><td> Communication</td><td>' + data.communication[0]+ '</td><td>' + data.communication[1]+ '</td><td>' + data.communication[2]+ '</td></tr>');
+               $('#myTable').append(row);
+              
+               row = $('<tr><td> Structure</td><td>' + data.structure[0]+ '</td><td>' + data.structure[1]+ '</td><td>' + data.structure[2]+ '</td></tr>');
+               $('#myTable').append(row);
+               
                row = $('<tr><td> Général</td><td>' + data.general[0]+ '</td><td>' + data.general[1]+ '</td><td>' + data.general[2]+ '</td></tr>');
                $('#myTable').append(row);
+
+               var row = $('<tr><td>'+data.hamming_score+'</td><td>'+data.hamming_loss+'</td></tr>');
+               $('#myTable2').append(row);
+
+
+               
+              
+
+
                }
 
-               if(data.niveau=="s"){
-              var row = $('<tr><td> Joie</td><td>' + data.joie[0]+ '</td><td>' + data.joie[1]+ '</td><td>' + data.joie[2]+ '</td></tr>');
-               $('#myTable').append(row);
-               row = $('<tr><td> Mécontentement</td><td>' + data.mecontentement[0]+ '</td><td>' + data.mecontentement[1]+ '</td><td>' + data.mecontentement[2]+ '</td></tr>');
-               $('#myTable').append(row);
-               row = $('<tr><td> Anxiété </td><td>' + data.anxiete[0]+ '</td><td>' + data.anxiete[1]+ '</td><td>' + data.anxiete[2]+ '</td></tr>');
+               if(data.niveau=="ts"){
+               var row = $('<tr><td> Anxiété </td><td>' + data.anxiete[0]+ '</td><td>' + data.anxiete[1]+ '</td><td>' + data.anxiete[2]+ '</td></tr>');
                $('#myTable').append(row);
                row = $('<tr><td> Colère</td><td>' + data.colere[0]+ '</td><td>' + data.colere[1]+ '</td><td>' + data.colere[2]+ '</td></tr>');
                $('#myTable').append(row);
                row = $('<tr><td> Ennui </td><td>' + data.ennui[0]+ '</td><td>' + data.ennui[1]+ '</td><td>' + data.ennui[2]+ '</td></tr>');
                $('#myTable').append(row);
+               row = $('<tr><td> Joie</td><td>' + data.joie[0]+ '</td><td>' + data.joie[1]+ '</td><td>' + data.joie[2]+ '</td></tr>');
+               $('#myTable').append(row);
+               row = $('<tr><td> Mécontentement</td><td>' + data.mecontentement[0]+ '</td><td>' + data.mecontentement[1]+ '</td><td>' + data.mecontentement[2]+ '</td></tr>');
+               $('#myTable').append(row);
                row = $('<tr><td> Confusion</td><td>' + data.confusion[0]+ '</td><td>' + data.confusion[1]+ '</td><td>' + data.confusion[2]+ '</td></tr>');
                $('#myTable').append(row);
-               var row = $('<tr><td> Neutre</td><td>' + data.neutre[0]+ '</td><td>' + data.neutre[1]+ '</td><td>' + data.neutre[2]+ '</td></tr>');
+               row = $('<tr><td> Satisfaction</td><td>' + data.satisfaction[0]+ '</td><td>' + data.satisfaction[1]+ '</td><td>' + data.satisfaction[2]+ '</td></tr>');
                $('#myTable').append(row);
+               row = $('<tr><td> Gratitude</td><td>' + data.gratitude[0]+ '</td><td>' + data.gratitude[1]+ '</td><td>' + data.gratitude[2]+ '</td></tr>');
+               $('#myTable').append(row);
+
+               var row = $('<tr><td>'+data.hamming_score+'</td><td>'+data.hamming_loss+'</td></tr>');
+               $('#myTable2').append(row);
                
                }
 
-               if(data.niveau=="vv"){
-              var row = $('<tr><td> Intrinsèque</td><td>' + data.intrinseque[0]+ '</td><td>' + data.intrinseque[1]+ '</td><td>' + data.intrinseque[2]+ '</td></tr>');
+               if(data.niveau=="t"){
+              var  row = $('<tr><td> Utilité</td><td>' + data.utilite[0]+ '</td><td>' + data.utilite[1]+ '</td><td>' + data.utilite[2]+ '</td></tr>');
                $('#myTable').append(row);
-               row = $('<tr><td> Utilité</td><td>' + data.utilite[0]+ '</td><td>' + data.utilite[1]+ '</td><td>' + data.utilite[2]+ '</td></tr>');
+               
+               row = $('<tr><td> Intrinsèque</td><td>' + data.intrinseque[0]+ '</td><td>' + data.intrinseque[1]+ '</td><td>' + data.intrinseque[2]+ '</td></tr>');
                $('#myTable').append(row);
                row = $('<tr><td> Accomplissement</td><td>' + data.accomplissement[0]+ '</td><td>' + data.accomplissement[1]+ '</td><td>' + data.accomplissement[2]+ '</td></tr>');
                $('#myTable').append(row);
                row = $('<tr><td> Cout</td><td>' + data.cout[0]+ '</td><td>' + data.cout[1]+ '</td><td>' + data.cout[2]+ '</td></tr>');
                $('#myTable').append(row);
-               var row = $('<tr><td> Neutre</td><td>' + data.neutre[0]+ '</td><td>' + data.neutre[1]+ '</td><td>' + data.neutre[2]+ '</td></tr>');
-               $('#myTable').append(row);
+
+               var row = $('<tr><td>'+data.hamming_score+'</td><td>'+data.hamming_loss+'</td></tr>');
+               $('#myTable2').append(row);
+              //  var row = $('<tr><td> Neutre</td><td>' + data.neutre[0]+ '</td><td>' + data.neutre[1]+ '</td><td>' + data.neutre[2]+ '</td></tr>');
+              //  $('#myTable').append(row);
                }
 
                if(data.niveau=="e"){

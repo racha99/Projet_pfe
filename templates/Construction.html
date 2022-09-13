@@ -37,32 +37,23 @@
         <div class="collapse navbar-collapse" id="navbarSupportedContent">
           <ul class="navbar-nav me-auto mb-2 mb-lg-0">
             <li class="nav-item">
-              <a class="nav-link "  href="/">Home</a>
+              <a class="nav-link "  href="/">Accueil</a>
             </li>
             <li class="nav-item">
-              <a class="nav-link "  href="/results">Dashboard</a>
+              <a class="nav-link "  href="/results">Data</a>
             </li>
-            <li class="nav-item dropdown">
-              <a class="nav-link  dropdown-toggle" href="/clusteringkmeans" id="navbarDropdown" role="button" data-bs-toggle="dropdown" aria-expanded="false">
-                  Clustering
-              </a>
-              <ul class="dropdown-menu" aria-labelledby="navbarDropdown">
-                <li><a class="dropdown-item " href="/clusteringkmeans">K-means</a></li>
-                <li><a class="dropdown-item" href="clusteringKmodes">K-modes</a></li>
-                
-              </ul>
-            </li> 
+           
             <li class="nav-item">
               <a class="nav-link "  href="/association">Association</a>
             </li>
 
            
             <li class="nav-item">
-              <a class="nav-link active" aria-current="page" href="/construction">Apprentissage</a>
+              <a class="nav-link active" aria-current="page" href="/construction">Création</a>
             </li>
 
             <li class="nav-item">
-              <a class="nav-link " aria-current="page" href="/classification">Prédiction</a>
+              <a class="nav-link  " aria-current="page" href="/classification">Evaluation</a>
             </li>
             
           </ul>
@@ -78,70 +69,36 @@
                 <div class="card px-0 pt-4 pb-0 ">
                     <form  class="needs-validation" id="msform"  method="POST" enctype="multipart/form-data" >
                       <!-- progressbar -->
-                        <ul id="progressbar">
-                            <li class="active" id="account"><strong>Prétraitements</strong></li>
-                            <li id="personal"><strong>Représentation</strong></li>
+                        <!-- <ul id="progressbar">
+                           
                             <li id="payment"><strong>Apprentissage</strong></li>
                             <li id="confirm"><strong>Résultat</strong></li>
-                        </ul>
+                        </ul> -->
                         <!-- <div class="progress">
                             <div class="progress-bar progress-bar-striped progress-bar-animated" role="progressbar" aria-valuemin="0" aria-valuemax="100"></div>
                         </div>  -->
                         <br> 
                         <!-- fieldsets -->
+                        
+                       
                         <fieldset>
                             <div class="form-card">
-                                <div class="row">
-                                <div class="col-5">
-                                <h3 class="fs-title">Corpus :</h3> </div>
-                                <div class="col-5">
-                                <select class="form-select" aria-label="Default select example">
-                                    <option selected>Corpus.csv</option>
-                                  </select> </div>
-                                </div>
-                                <h3 class="fs-title">Choix de prétraitements :</h3>
-                                <label class="contain s">Filtrage automatique
-                                  <input type='hidden' name='F' value='false'/>
-                                  <input type="checkbox" id="F" name="F" value='true'>
-                                  <span class="checkmark"></span>
-                                </label>
-                                <label class="contain s"> Lemmatisation
-                                  <input type='hidden' name='L' value='false'/>
-                                  <input type="checkbox" id="L" name="L" value="true" checked>
-                                  <span class="checkmark"></span>
-                                </label>
-                                <label class="contain s">Suppression des mots vides
-                                  <input type='hidden' name='V' value='false'/>
-                                  <input type="checkbox" id="V" name="V" value="true">
-                                  <span class="checkmark"></span>
-                                </label>
-                                </div>
-                                <input id="pretraitement" class="pretraitement action-button" type="button"  value="Suivant" />
-                                <input id="gonext" type="button" name="suivant" class="next action-button" value="Suivant" hidden/>
-                                
-                                
-                              </fieldset>
-                        <fieldset>
-                            <div class="form-card">
-                               
-                                <div class="row ">
-                                     <h3 class="fs-title">Choix de représentation:</h3>   
-                                </div>
-                                <div class="row ">
-                                      <select id="Repres" class="form-select"  name="Repres" required aria-label="select example" style="width:15;">
-                                      <option value="11">Unigramme</option>
-                                      <option value="22">Bigramme</option>
-                                      <option value="33">Trigramme</option>
-                                      <option value="12" selected >Unigramme & Bigramme</option>
-                                      <option value="13">Unigramme & Bigramme &Trigramme</option>
-                                      </select>
-                                </div>        
-                                
-                               
-                            </div> <input type="button" name="suivant" class="next action-button" value="Suivant" /> <input type="button" name="retour" class="previous action-button-previous" value="Retour" />
-                        </fieldset>
-                        <fieldset>
-                            <div class="form-card">
+
+                              <div class="row ">
+                                <h3 class="fs-title">Niveau de classification :</h3>  </div> 
+                             <div class="row ">
+                                   <select id="nvclass" name="nvclass" class="form-select" required aria-label="select example" style="width:15;">
+                                   <option value="p"selected>Polarité</option>
+                                   <option value="ta">Aspect</option>
+                                   <option value="ts">Sentiment</option>
+                                   <option value="at">Attitude</option>
+                                   <option value="t">Valeur</option>
+                                   <option value="e">Attente</option>
+                                  
+                                    <!-- zzz -->
+                                   
+                                   </select>
+                             </div>  
                             <div class="row ">
                                   <h3 class="fs-title">Choix du classifieur :</h3>   
                              </div>
@@ -151,32 +108,44 @@
                                    <option value="kpp">KPP</option>
                                    <option value="rna">RNA</option>
                                    <option value="mlknn">MLKNN</option>
+                                   <option value="brrf">RF {BR}</option>
+                                   <option value="brsvm">SVM {BR}</option>
+                                   <option value="brknn">KNN {BR}</option>
+                                   <option value="brmlp">MLP {BR}</option>
+                                   <option value="lprf">RF {LP}</option>
+                                   <option value="lpsvm">SVM {LP}</option>
+                                   <option value="lpknn">KNN {LP}</option>
                                    </select>
                              </div>  
-                             <div class="row ">                             
-                                <label class="fs-title" for="quantity">Pourcentage test :</label></div>   
-                              <div class="row ">   
-                                <input type="number" id="quantity" name="quantity" min="1" max="30" value="30"> </div>
-                              <div class="row ">
-                                <h3 class="fs-title">Niveau de classification :</h3>  </div> 
-                             <div class="row ">
-                                   <select id="nvclass" name="nvclass" class="form-select" required aria-label="select example" style="width:15;">
-                                   <option value="p"selected>Polarité</option>
-                                   <option value="a">Aspect</option>
-                                   <option value="s">Sentiment</option>
-                                   <option value="at">Attitude</option>
-                                   <option value="vv">Valeur</option>
-                                   <option value="e">Attente</option>
-                                   <option value="t">TestValue</option>
-                                   <option value="ts">TestSentiments</option>
-                                   <option value="ta">TestAspects</option>
-                                    <!-- zzz -->
-                                   
-                                   </select>
-                             </div>                            
+                              
+                            
+                                                      
                              </div> 
-                             <input type="button" name="suivant" class="next action-button" value="Terminer" /> <input type="button" name="retour" class="previous action-button-previous" value="Retour" />
-                        </fieldset>
+                             <input type="button" name="suivant" class="next action-button" style="background-color: #4e73df;" value="Terminer" /> 
+                             
+                        
+                             <script>
+                              $("#nvclass").change(function(){
+                              $('#classif option').remove();
+                              if($("#nvclass option:selected").val()=="p"|| $("#nvclass option:selected").val()=="at"||$("#nvclass option:selected").val()=="e"){
+                                  $('#classif').append('<option value="svm">SVM</option>');
+                                  $('#classif').append('<option value="kpp">KPP</option>');
+                                  $('#classif').append('<option value="rna">RNA</option>');
+                                  }
+                              else if($("#nvclass option:selected").val()=="ta"||$("#nvclass option:selected").val()=="ts"||$("#nvclass option:selected").val()=="t"){
+                                  $('#classif').append('<option value="mlknn">MLKNN</option>');
+                                  $('#classif').append('<option value="brrf">RF {BR}</option>');
+                                  $('#classif').append('<option value="brsvm">SVM {BR}</option>');
+                                  $('#classif').append('<option value="brknn">KNN {BR}</option>');
+                                  $('#classif').append('<option value="brmlp">MLP {BR}</option>');
+                                  $('#classif').append('<option value="lprf">RF {LP}</option>');
+                                  $('#classif').append('<option value="lpsvm">SVM {LP}</option>');
+                                  $('#classif').append('<option value="lpknn">KNN {LP}</option>');
+                                  }
+                              });
+                              </script>
+                        
+                            </fieldset>
                         <fieldset>
                             <div class="form-card">
                                  <br>
@@ -193,8 +162,8 @@
                                
                             
                             <div class="row justify-content-center">
-                             <a href="{% url 'Construction' %}"  id="new" class="md" role="button" aria-pressed="true" style='text-decoration:none;text-align: center;visibility: hidden; display: none;' >Nouveau Modele</a>
-                             <a href="{% url 'Classification' %}" id="res" class="md" role="button" aria-pressed="true" style='text-decoration:none;text-align: center;visibility: hidden; display: none;'>Voir Résultats</a>
+                             <a href="{% url 'Construction' %}"  id="new" class="md" role="button" aria-pressed="true" style='text-decoration:none;text-align: center;visibility: hidden; display: none; background-color:  #4e73df;' >Nouveau Modele</a>
+                             <a href="{% url 'Classification' %}" id="res" class="md" role="button" aria-pressed="true" style='text-decoration:none;text-align: center;visibility: hidden; display: none; background-color:  #4e73df;'>Voir Résultats</a>
                             </div>
                           </div>
                         </fieldset> 

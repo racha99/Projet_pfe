@@ -3,7 +3,7 @@ from django.http.response import JsonResponse
 from django.shortcuts import render, redirect
 from django.http import HttpResponse, HttpResponseRedirect
 from sklearn.model_selection import train_test_split
-from sklearn.metrics import classification_report
+from sklearn.metrics import classification_report, hamming_loss
 from sklearn.neural_network import MLPClassifier
 from sklearn.neighbors import KNeighborsClassifier
 from sklearn import svm
@@ -39,6 +39,11 @@ from django.contrib.staticfiles.utils import get_files
 from django.contrib.staticfiles.storage import StaticFilesStorage
 import glob
 
+
+from skmultilearn.problem_transform import BinaryRelevance
+from sklearn.ensemble import RandomForestClassifier
+from skmultilearn.problem_transform import LabelPowerset
+
 from sklearn import preprocessing 
 from contextlib import ContextDecorator
 from typing import ContextManager
@@ -71,7 +76,26 @@ from wordcloud import WordCloud
 def is_ajax(request):
     return request.META.get('HTTP_X_REQUESTED_WITH') == 'XMLHttpRequest'
 
-
+def hamming_score(y_true, y_pred, normalize=True, sample_weight=None):
+    '''
+    Compute the Hamming score (a.k.a. label-based accuracy) for the multi-label case
+    http://stackoverflow.com/q/32239577/395857
+    '''
+    acc_list = []
+    for i in range(y_true.shape[0]):
+        set_true = set( np.where(y_true[i])[0] )
+        set_pred = set( np.where(y_pred[i])[0] )
+        #print('\nset_true: {0}'.format(set_true))
+        #print('set_pred: {0}'.format(set_pred))
+        tmp_a = None
+        if len(set_true) == 0 and len(set_pred) == 0:
+            tmp_a = 1
+        else:
+            tmp_a = len(set_true.intersection(set_pred))/\
+                    float( len(set_true.union(set_pred)) )
+        #print('tmp_a: {0}'.format(tmp_a))
+        acc_list.append(tmp_a)
+    return np.mean(acc_list)
 
 def Home(request):
     context = {}
@@ -443,6 +467,24 @@ def train_testvalue(clas,rep):
      #score = 'f1_micro'
     if(clas=="mlknn"):
         x = MLkNN(k=26)
+    if(clas=="brrf"):  
+        x = BinaryRelevance(classifier = RandomForestClassifier(), require_dense = [False, True])
+    if(clas=="brsvm"):  
+        x = BinaryRelevance(classifier = svm.SVC(C=1.0, kernel='linear', degree=3, gamma='auto'), require_dense = [False, True])
+    if(clas=="brknn"):  
+        x = BinaryRelevance(classifier = KNeighborsClassifier(n_neighbors = 17,metric='euclidean'), require_dense = [False, True])
+    if(clas=="brmlp"):  
+        x = BinaryRelevance(classifier = MLPClassifier(), require_dense = [False, True])
+
+    if(clas=="lprf"):  
+        x = LabelPowerset(classifier = RandomForestClassifier(), require_dense = [False, True])
+    if(clas=="lpsvm"):  
+        x = LabelPowerset(classifier = svm.SVC(C=1.0, kernel='linear', degree=3, gamma='auto'), require_dense = [False, True])
+    if(clas=="lpknn"):  
+        x = LabelPowerset(classifier = KNeighborsClassifier(n_neighbors = 17,metric='euclidean'), require_dense = [False, True])
+    if(clas=="lpmlp"):  
+        x = LabelPowerset(classifier = MLPClassifier(), require_dense = [False, True])
+
         # x = GridSearchCV(MLkNN(), parameters, scoring=score)
         # print('best parameters :', x.best_params_, 'best score: ', clf.best_score_)
     return (x) 
@@ -455,6 +497,25 @@ def train_testsentiments(clas,rep):
         x = MLkNN(k=26)
         # x = GridSearchCV(MLkNN(), parameters, scoring=score)
         # print('best parameters :', x.best_params_, 'best score: ', clf.best_score_)
+
+    if(clas=="brrf"):  
+        x = BinaryRelevance(classifier = RandomForestClassifier(), require_dense = [False, True])
+    if(clas=="brsvm"):  
+        x = BinaryRelevance(classifier = svm.SVC(C=1.0, kernel='linear', degree=3, gamma='auto'), require_dense = [False, True])
+    if(clas=="brknn"):  
+        x = BinaryRelevance(classifier = KNeighborsClassifier(n_neighbors = 17,metric='euclidean'), require_dense = [False, True])
+    if(clas=="brmlp"):  
+        x = BinaryRelevance(classifier = MLPClassifier(), require_dense = [False, True])
+
+    if(clas=="lprf"):  
+        x = LabelPowerset(classifier = RandomForestClassifier(), require_dense = [False, True])
+    if(clas=="lpsvm"):  
+        x = LabelPowerset(classifier = svm.SVC(C=1.0, kernel='linear', degree=3, gamma='auto'), require_dense = [False, True])
+    if(clas=="lpknn"):  
+        x = LabelPowerset(classifier = KNeighborsClassifier(n_neighbors = 17,metric='euclidean'), require_dense = [False, True])
+    if(clas=="lpmlp"):  
+        x = LabelPowerset(classifier = MLPClassifier(), require_dense = [False, True])
+
     return (x)
 
 def train_testaspects(clas,rep): 
@@ -463,6 +524,25 @@ def train_testaspects(clas,rep):
      #score = 'f1_micro'
     if(clas=="mlknn"):
         x = MLkNN(k=26)
+    
+    if(clas=="brrf"):  
+        x = BinaryRelevance(classifier = RandomForestClassifier(), require_dense = [False, True])
+    if(clas=="brsvm"):  
+        x = BinaryRelevance(classifier = svm.SVC(C=1.0, kernel='linear', degree=3, gamma='auto'), require_dense = [False, True])
+    if(clas=="brknn"):  
+        x = BinaryRelevance(classifier = KNeighborsClassifier(n_neighbors = 17,metric='euclidean'), require_dense = [False, True])
+    if(clas=="brmlp"):  
+        x = BinaryRelevance(classifier = MLPClassifier(), require_dense = [False, True])
+
+    if(clas=="lprf"):  
+        x = LabelPowerset(classifier = RandomForestClassifier(), require_dense = [False, True])
+    if(clas=="lpsvm"):  
+        x = LabelPowerset(classifier = svm.SVC(C=1.0, kernel='linear', degree=3, gamma='auto'), require_dense = [False, True])
+    if(clas=="lpknn"):  
+        x = LabelPowerset(classifier = KNeighborsClassifier(n_neighbors = 17,metric='euclidean'), require_dense = [False, True])
+    if(clas=="lpmlp"):  
+        x = LabelPowerset(classifier = MLPClassifier(), require_dense = [False, True])
+
         # x = GridSearchCV(MLkNN(), parameters, scoring=score)
         # print('best parameters :', x.best_params_, 'best score: ', clf.best_score_)
     return (x) 
@@ -472,14 +552,8 @@ def classification_model(nv,classi,rep):
     x=0
     if(nv=="p"):
         x=train_polarite(classi,rep)
-    if (nv=="s"):
-        x=train_sentiment(classi,rep)
-    if(nv=="a"):
-        x = train_aspect(classi,rep)
     if(nv=="at"):
         x= train_attitude(classi,rep)
-    if(nv=="vv"):
-        x=train_valeur(classi,rep)
     if(nv=="e"):
         x=train_attente(classi,rep)
     if(nv=="t"):
@@ -521,22 +595,24 @@ def modele_creation(request):
  if is_ajax(request):
         data = json.loads(request.POST.get('donnee',None))
         for some_variable in data:
-          if some_variable['name'] == 'F':
-            filt=some_variable['value']
-          if some_variable['name'] == 'L':
-            lem=some_variable['value']  
-          if some_variable['name'] == 'V': 
-            vide=some_variable['value']  
+          # if some_variable['name'] == 'F':
+          #   filt=some_variable['value']
+          # if some_variable['name'] == 'L':
+          #   lem=some_variable['value']  
+          # if some_variable['name'] == 'V': 
+          #   vide=some_variable['value']  
           if some_variable['name'] == 'classif': 
             classi=some_variable['value'] 
-          if some_variable['name'] == 'Repres': 
-            repr=some_variable['value']  
-          if some_variable['name'] == 'quantity': 
-             teste=some_variable['value']
+          # if some_variable['name'] == 'Repres': 
+          #   repr=some_variable['value']  
+          # if some_variable['name'] == 'quantity': 
+          #    teste=some_variable['value']
           if some_variable['name'] == 'nvclass': 
              niveau=some_variable['value']      
         
-        print(filt,lem,vide,classi,repr,teste) 
+        # print(filt,lem,vide,classi,repr,teste) 
+        repr="13"
+        teste="30"
             
         my_file = pd.read_csv("media/Neww.csv", sep=None, engine='python',encoding='utf-8', error_bad_lines=False)
         data = pd.DataFrame(data=my_file, index=None)
@@ -548,7 +624,7 @@ def modele_creation(request):
         nlp = fr_core_news_sm.load()
         table= []
         for i in data['Commentaire']:
-            a =Pretraitement(i,filt,lem,vide)
+            a =Pretraitement(i,True,True,True)
             table.append(a)
         
         data=data.assign(CommentairePrep=table)
@@ -556,7 +632,7 @@ def modele_creation(request):
         #print(json_records)
         #dataa = []
         #dataa = json.loads(json_records)
-        d,vectors=ngram_tfidf(data,int(repr[0]),int(repr[1]))
+        d,vectors=ngram_tfidf(data,1,3)
         rows1 = len(d.axes[0])
         columns1 = len(d.axes[1])
         print(rows1,columns1)
@@ -567,11 +643,11 @@ def modele_creation(request):
              y= data[['Utilité', 'Intrinsèque', 'Accomplissement', 'Cout']]
              label_names=["Utilité","Intrinsèque","Accomplissement","Cout"]
           elif (niveau == "ts"):
-             y= data[['Anxiété', 'Colère', 'Ennui', 'Joie', 'Mécontentement', 'Confusion']]
-             label_names=["Anxiété","Colère","Ennui","Joie","Mécontentement","Confusion"]
+             y= data[['Anxiété', 'Colère', 'Ennui', 'Joie', 'Mécontentement', 'Confusion',"Satisfaction","Gratitude"]]
+             label_names=["Anxiété","Colère","Ennui","Joie","Mécontentement","Confusion","Satisfaction","Gratitude"]
           else :
-             y= data[['Présentation', 'Contenu', 'Design', 'Général', 'Communication', 'Structure']]
-             label_names=["Présentation","Contenu","Design","Général","Communication","Structure"]
+             y= data[['Présentation', 'Contenu', 'Design', 'Communication', 'Structure','Général', ]]
+             label_names=["Présentation","Contenu","Design","Communication","Structure","Général",]
 
           X_train, X_test, y_train, y_test = train_test_split(d, y, test_size = 0.33, random_state = 42)
           classification = classification_model(niveau,classi,repr)
@@ -594,12 +670,16 @@ def modele_creation(request):
           prediction=(classification.predict(X_test))
 
        #  X_train, X_test, y_train, y_test = train_test_split(d, y, test_size = (int(teste)/100), random_state = 42, stratify=y)
+        # val_hamming_loss = hamming_loss(y_test, prediction)
+        # print ("Hamming loss : ", val_hamming_loss )
+
+        # val_hamming_score = hamming_score(np.array(y_test), np.array(prediction))
+        # print('Hamming score: {0}'.format(hamming_score(np.array(y_test), np.array(prediction))))
         
-        
-        treatment =""
-        if (filt== "true"): treatment ="F"
-        if (lem== "true"):  treatment = treatment + "L"
-        if (vide== "true"):  treatment = treatment + "V"
+        treatment ="FLV"
+        # if (filt== "true"): treatment ="F"
+        # if (lem== "true"):  treatment = treatment + "L"
+        # if (vide== "true"):  treatment = treatment + "V"
     # Save the trained model as a pickle string.
 
         filename = treatment+"_"+repr+"_"+classi+"_"+teste+"_"+niveau
@@ -661,8 +741,18 @@ def Classification(request):
     context['represent'] = s[1]
     context['classifieur'] = s[2]
     performances = result.split()
+    hamming_exist=False
+    if ((s[4]=="t") or (s[4]=="ta") or (s[4]=="ts")):
+        hamming_exist=True
+        p = classificatio.predict(x_test)
+        val_hamming_loss =round(hamming_loss(test, p),2)
+        print ("Hamming loss : ", val_hamming_loss )
+        context['hamming_loss'] = val_hamming_loss
+      
+         
+       
+        context['hamming_score'] = round(hamming_score(np.array(test), p.toarray()),2)
 
-    #zzz
     if (s[4]=="p"):
         context['niveau'] = s[4]
         negative = performances[5],performances[6],performances[7]
@@ -672,14 +762,14 @@ def Classification(request):
         context['negative'] = negative
         context['neutre'] = neutre
 
-    if(s[4]=="a"):
+    if(s[4]=="ta"):
         context['niveau'] = s[4]
-        contenu = performances[5],performances[6],performances[7]
-        communication = performances[10],performances[11],performances[12]
+        presentation = performances[5],performances[6],performances[7]
+        contenu  = performances[10],performances[11],performances[12]
         design = performances[15],performances[16],performances[17]
-        general = performances[20],performances[21],performances[22]
-        presentation = performances[25],performances[26],performances[27]
-        structure = performances[30],performances[31],performances[32]
+        communication = performances[20],performances[21],performances[22]
+        structure = performances[25],performances[26],performances[27]
+        general = performances[30],performances[31],performances[32]
         context['contenu'] = contenu
         context['communication'] = communication
         context['design'] = design
@@ -687,22 +777,24 @@ def Classification(request):
         context['presentation'] = presentation
         context['general'] = general
 
-    if(s[4]=="s"):
+    if(s[4]=="ts"):
         context['niveau'] = s[4]
         anxiete = performances[5],performances[6],performances[7]
         colere = performances[10],performances[11],performances[12]
         ennui = performances[15],performances[16],performances[17]
-        confusion = performances[20],performances[21],performances[22]
-        joie = performances[25],performances[26],performances[27]
-        mecontentement = performances[30],performances[31],performances[32]
-        neutre = performances[35],performances[36],performances[37]
+        joie= performances[20],performances[21],performances[22]
+        mecontentement= performances[25],performances[26],performances[27]
+        confusion= performances[30],performances[31],performances[32]
+        satisfaction = performances[35],performances[36],performances[37]
+        gratitude=performances[40],performances[41],performances[42]
         context['anxiete'] = anxiete
         context['colere'] = colere
         context['ennui'] = ennui
         context['confusion'] = confusion
         context['joie'] = joie
         context['mecontentement'] = mecontentement
-        context['neutre'] = neutre
+        context['satisfaction'] = satisfaction
+        context['gratitude']=gratitude
 
     if (s[4]=="at"):
         context['niveau'] = s[4]
@@ -713,14 +805,15 @@ def Classification(request):
         context['hostile'] = hostile
         context['neutre'] = neutre
     
-    if (s[4]=="vv"):
+    if (s[4]=="t"):
         context['niveau'] = s[4]
-        intrinseque = performances[5],performances[6],performances[7]
-        utilite = performances[10],performances[11],performances[12]
+        utilite = performances[5],performances[6],performances[7]
+        intrinseque = performances[10],performances[11],performances[12] 
+        
         accomplissement = performances[15],performances[16],performances[17]
         cout = performances[20],performances[21],performances[22]
-        neutre = performances[25],performances[26],performances[27]
-        context['neutre'] = neutre
+       
+    
         context['intrinseque'] = intrinseque
         context['utilite'] = utilite
         context['accomplissement'] = accomplissement
@@ -735,7 +828,7 @@ def Classification(request):
         context['negative'] = negative
         context['neutre'] = neutre
        
-    
+    context['hamming_exist']=hamming_exist
     print(nom)
 
     return render(request, 'Classification.html', context)
@@ -771,8 +864,18 @@ def change_modele(request):
     context['represent'] = s[1]
     context['classifieur'] = s[2]
     performances = result.split()
+    hamming_exist=False
 
-    #zzz
+    if ((s[4]=="t") or (s[4]=="ta") or (s[4]=="ts")):
+      p = classificatio.predict(x_test)
+      val_hamming_loss = round(hamming_loss(test, p),2)
+      print ("Hamming loss : ", val_hamming_loss )
+      context['hamming_loss'] = val_hamming_loss
+      hamming_exist=True
+        
+     
+      context['hamming_score'] = round(hamming_score(np.array(test), p.toarray()),2)
+
     if (s[4]=="p"):
         context['niveau'] = s[4]
         negative = performances[5],performances[6],performances[7]
@@ -782,14 +885,14 @@ def change_modele(request):
         context['negative'] = negative
         context['neutre'] = neutre
 
-    if(s[4]=="a"):
+    if(s[4]=="ta"):
         context['niveau'] = s[4]
-        contenu = performances[5],performances[6],performances[7]
-        communication = performances[10],performances[11],performances[12]
+        presentation = performances[5],performances[6],performances[7]
+        contenu  = performances[10],performances[11],performances[12]
         design = performances[15],performances[16],performances[17]
-        general = performances[20],performances[21],performances[22]
-        presentation = performances[25],performances[26],performances[27]
-        structure = performances[30],performances[31],performances[32]
+        communication = performances[20],performances[21],performances[22]
+        structure = performances[25],performances[26],performances[27]
+        general = performances[30],performances[31],performances[32]
         context['contenu'] = contenu
         context['communication'] = communication
         context['design'] = design
@@ -797,23 +900,24 @@ def change_modele(request):
         context['presentation'] = presentation
         context['general'] = general
 
-    if(s[4]=="s"):
+    if(s[4]=="ts"):
         context['niveau'] = s[4]
         anxiete = performances[5],performances[6],performances[7]
         colere = performances[10],performances[11],performances[12]
         ennui = performances[15],performances[16],performances[17]
-        confusion = performances[20],performances[21],performances[22]
-        joie = performances[25],performances[26],performances[27]
-        mecontentement = performances[30],performances[31],performances[32]
-        neutre = performances[35],performances[36],performances[37]
+        joie= performances[20],performances[21],performances[22]
+        mecontentement= performances[25],performances[26],performances[27]
+        confusion= performances[30],performances[31],performances[32]
+        satisfaction = performances[35],performances[36],performances[37]
+        gratitude=performances[40],performances[41],performances[42]
         context['anxiete'] = anxiete
         context['colere'] = colere
         context['ennui'] = ennui
         context['confusion'] = confusion
         context['joie'] = joie
         context['mecontentement'] = mecontentement
-        context['neutre'] = neutre
-
+        context['satisfaction'] = satisfaction
+        context['gratitude']=gratitude
     if (s[4]=="at"):
         context['niveau'] = s[4]
         amical = performances[5],performances[6],performances[7]
@@ -823,14 +927,14 @@ def change_modele(request):
         context['hostile'] = hostile
         context['neutre'] = neutre
 
-    if (s[4]=="vv"):
+    if (s[4]=="t"):
         context['niveau'] = s[4]
-        intrinseque = performances[5],performances[6],performances[7]
-        utilite = performances[10],performances[11],performances[12]
+        utilite = performances[5],performances[6],performances[7]
+        intrinseque = performances[10],performances[11],performances[12] 
+        
         accomplissement = performances[15],performances[16],performances[17]
         cout = performances[20],performances[21],performances[22]
-        neutre = performances[25],performances[26],performances[27]
-        context['neutre'] = neutre
+        
         context['intrinseque'] = intrinseque
         context['utilite'] = utilite
         context['accomplissement'] = accomplissement
@@ -845,8 +949,8 @@ def change_modele(request):
         context['negative'] = negative
         context['neutre'] = neutre  
     
-    print("last"+context['niveau'])
-
+    print("last context"+context['niveau'])
+    context['hamming_exist']=hamming_exist
 
     
     
@@ -986,9 +1090,9 @@ def ajax_posting(request):
 
                                     else:
                                       if(s[4]=="ts"): 
-                                        c = ['Anxiété', 'Colère', 'Ennui', 'Joie', 'Mécontentement', 'Confusion']
+                                        c = ['Anxiété', 'Colère', 'Ennui', 'Joie', 'Mécontentement', 'Confusion',"Satisfaction","Gratitude"]
                                         msg = ""
-                                        for i in range(6):
+                                        for i in range(8):
                                           if result[0,i]==1 :
                                             if msg == "" :
                                                msg = c[i]

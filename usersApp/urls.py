@@ -10,6 +10,7 @@ urlpatterns = [
  # path('', views.login, name='login'),
    path('dashboard', views.Dashboard, name='dashboardTeacher'),
    path('test-json', views.data_display, name='test-json'),
+   path('test-template', views.TestTemplate, name='test-template'),
    path('input', views.Input,name='inputStudent'),
    path('administration', views.administration, name='administration'),
    #bdlt here

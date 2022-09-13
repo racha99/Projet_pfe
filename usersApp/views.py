@@ -19,6 +19,9 @@ import pickle
 from django.conf import settings # import the settings file
 
 
+def TestTemplate(request):
+  return  render(request, 'test_new/index.html')
+
 global selected_cours 
 selected_cours = None
 
@@ -123,9 +126,9 @@ def Dashboard(request,k=None):
         teacher = request.user.teacher
         modules = Module.objects.filter(teachers=teacher.id)
         module = modules[0].code
-        if selected_module :
+        if selected_cours :
           print ('iff')
-          module = selected_module 
+          module = selected_cours 
 
       if (year<= 2021):
         my_file = pd.read_csv("media/Neww.csv", sep=None, engine='python',encoding='utf-8', error_bad_lines=False)
@@ -133,8 +136,12 @@ def Dashboard(request,k=None):
 
         data = data[data['Module']==module]
 
-        data['Séance'] = (pd.to_datetime(data['Séance'])).dt.year
-        data = data[data['Séance']==year]
+        # data['Séance'] = (pd.to_datetime(data['Séance'])).dt.year
+        # data = data[data['Séance']==year]
+        
+        data['Séance'] = pd.to_datetime(data['Séance']).dt.strftime('%Y-%m-%d')
+        data=data[(data['Séance'] > '2020-12-31') & (data['Séance'] < '2022-01-01')]
+        print("this data",data)
         
 
       else :
@@ -145,7 +152,7 @@ def Dashboard(request,k=None):
             cmnts.append(c.id)
         data = pd.DataFrame(list(comment_traité.objects.filter(comment_id__in=cmnts).values()))
         
-      print (data)
+      print ("data ta3 3chiya",data)
 
    
     #wordcloud
@@ -443,9 +450,11 @@ def Dashboard(request,k=None):
 
 
       # ------------------------------------------------Attitude générale-------------------------------------------
+      print("attitude general")
       attitude = [] 
       for x in data["Attitude"]:
         attitude.append(x)
+      print(data["Attitude"])
       
       attitude_stat = dict(Counter(attitude)) 
       attitude_keys = attitude_stat.keys()
@@ -470,15 +479,16 @@ def Dashboard(request,k=None):
         else:
           j='Hostile'
           listkeysAt.append(j)
+      print("attitude",listkeysAt[0])
 
       attitude_ne=0
       attitude_a=0
       attitude_h=0
       if "NE" in listkeys_T:
         attitude_ne=listvalues_T[0]
-      if "A" in listvalues_T:
+      if "A" in listkeys_T:
         attitude_a=listvalues_T[1]
-      if "H" in listvalues_T:
+      if "H" in listkeys_T:
         attitude_h=listvalues_T[2]
 
       
@@ -491,13 +501,15 @@ def Dashboard(request,k=None):
       attitude_ne=round((attitude_ne/S)*100)
       attitude_a=round((attitude_a/S)*100)
       attitude_h=round((attitude_h/S)*100)
-      print(S,attitude_ne,attitude_a,attitude_h)
+      print("comme +",S,attitude_ne,attitude_a,attitude_h)
 
 
 
 
       # -----------------------------------------------Evolutions des émotions-------------------------------------------
-      data["Séance"]=pd.to_datetime(data["Séance"])
+      data["Séance"]=pd.to_datetime(data["Séance"]).dt.strftime('%Y-%m-%d')
+      # data["Séance"]=pd.to_datetime(data["Séance"], format='%d/%m/%Y')
+      
       data_sorted=data.sort_values(by="Séance")
 
       print("seances",data_sorted)
@@ -521,19 +533,31 @@ def Dashboard(request,k=None):
       s1= data_sorted.groupby(["Joie","Séance"],as_index=False)['Commentaire'].count()
       s2= data_sorted.groupby(["Mécontentement","Séance"],as_index=False)['Commentaire'].count()
       s3= data_sorted.groupby(["Anxiété","Séance"],as_index=False)['Commentaire'].count()
+      s4= data_sorted.groupby(["Colère","Séance"],as_index=False)['Commentaire'].count()
+      s5= data_sorted.groupby(["Ennui","Séance"],as_index=False)['Commentaire'].count()
+      s6= data_sorted.groupby(["Confusion","Séance"],as_index=False)['Commentaire'].count()
+      s7= data_sorted.groupby(["Gratitude","Séance"],as_index=False)['Commentaire'].count()
+      s8= data_sorted.groupby(["Satisfaction","Séance"],as_index=False)['Commentaire'].count()
+      
 
       list_S1= s1[s1["Joie"]==1]
       list_S2= s2[s2["Mécontentement"]==1]
       list_S3= s3[s3["Anxiété"]==1]
-
-      print("these are S1",list_S1)
+      list_S4= s4[s4["Colère"]==1]
+      list_S5= s5[s5["Ennui"]==1]
+      list_S6= s6[s6["Confusion"]==1]
+      list_S7= s7[s7["Gratitude"]==1]
+      list_S8= s8[s8["Satisfaction"]==1]
+      
+      print("these are S1",s8)
+      print("these are S1",list_S8)
       #print (sorted(list_S1,key=lambda x:datetime.datetime.strptime(x[2],"%d/%m/%Y")))
       listvalues_S1 = [] 
       listvalues_S1Y = [] 
       listvalues_S1X = [] 
 
       for x in list_S1["Séance"]:
-        listvalues_S1X.append(x.strftime("%Y-%m-%d"))
+        listvalues_S1X.append(x)
       for x in list_S1["Commentaire"]:
         listvalues_S1Y.append(x)
 
@@ -541,7 +565,7 @@ def Dashboard(request,k=None):
       listvalues_S2Y = [] 
       listvalues_S2X = [] 
       for x in list_S2["Séance"]:
-        listvalues_S2X.append(x.strftime("%Y-%m-%d"))
+        listvalues_S2X.append(x)
       for x in list_S2["Commentaire"]:
         listvalues_S2Y.append(x)
 
@@ -549,9 +573,53 @@ def Dashboard(request,k=None):
       listvalues_S3Y = [] 
       listvalues_S3X = [] 
       for x in list_S3["Séance"]:
-        listvalues_S3X.append(x.strftime("%Y-%m-%d"))
+        listvalues_S3X.append(x)
       for x in list_S3["Commentaire"]:
         listvalues_S3Y.append(x)
+
+      listvalues_S4=[]
+      listvalues_S4Y = [] 
+      listvalues_S4X = [] 
+      for x in list_S4["Séance"]:
+        listvalues_S4X.append(x)
+      for x in list_S4["Commentaire"]:
+        listvalues_S4Y.append(x)
+      
+
+      listvalues_S5=[]
+      listvalues_S5Y = [] 
+      listvalues_S5X = [] 
+      for x in list_S5["Séance"]:
+        listvalues_S5X.append(x)
+      for x in list_S5["Commentaire"]:
+        listvalues_S5Y.append(x)
+      
+
+      listvalues_S6=[]
+      listvalues_S6Y = [] 
+      listvalues_S6X = [] 
+      for x in list_S6["Séance"]:
+        listvalues_S6X.append(x)
+      for x in list_S6["Commentaire"]:
+        listvalues_S6Y.append(x)
+      
+
+      listvalues_S7=[]
+      listvalues_S7Y = [] 
+      listvalues_S7X = [] 
+      for x in list_S7["Séance"]:
+        listvalues_S7X.append(x)
+      for x in list_S7["Commentaire"]:
+        listvalues_S7Y.append(x)
+      
+
+      listvalues_S8=[]
+      listvalues_S8Y = [] 
+      listvalues_S8X = [] 
+      for x in list_S8["Séance"]:
+        listvalues_S8X.append(x)
+      for x in list_S8["Commentaire"]:
+        listvalues_S8Y.append(x)
       
       data = []
       jsonList=[]
@@ -564,12 +632,27 @@ def Dashboard(request,k=None):
       
       for i in range(0,len(listvalues_S3X)):
         listvalues_S3.append({"x" : listvalues_S3X[i], "y" : listvalues_S3Y[i]})
+
+      for i in range(0,len(listvalues_S4X)):
+        listvalues_S4.append({"x" : listvalues_S4X[i], "y" : listvalues_S4Y[i]})
+
+      for i in range(0,len(listvalues_S5X)):
+        listvalues_S5.append({"x" : listvalues_S5X[i], "y" : listvalues_S5Y[i]})
+      
+      for i in range(0,len(listvalues_S6X)):
+        listvalues_S6.append({"x" : listvalues_S6X[i], "y" : listvalues_S6Y[i]})
+      
+      for i in range(0,len(listvalues_S7X)):
+        listvalues_S7.append({"x" : listvalues_S7X[i], "y" : listvalues_S7Y[i]})
+      
+      for i in range(0,len(listvalues_S8X)):
+        listvalues_S8.append({"x" : listvalues_S8X[i], "y" : listvalues_S8Y[i]})
       
       
       # jsonList
 
 
-      print(jsonList)
+      print("date S8",listvalues_S8)
         
       # listvalues_S2 = [] 
       # for x in list_S2["Commentaire"]:
@@ -606,6 +689,14 @@ def Dashboard(request,k=None):
               'listvalues_S1':listvalues_S1,
               'listvalues_S2':listvalues_S2,
               'listvalues_S3':listvalues_S3,
+
+              'listvalues_S4':listvalues_S4,
+              'listvalues_S5':listvalues_S5,
+              'listvalues_S6':listvalues_S6,
+
+              'listvalues_S7':listvalues_S7,
+              'listvalues_S8':listvalues_S8,
+              
 
               'listkeys_T': listkeysAt,
               'listvalues_T': listvalues_T,
@@ -671,9 +762,9 @@ def DashboardViewComments(request):
     
     cours=data.loc[:,"Module"]
     list_cours=cours.values.tolist()
-    if(selected_cours!="all"):
+    if(selected_cours!=None):
       data=data.query("Module=="+"'"+selected_cours+"'")
-   
+    
     # if selected_cours!="all":
     #   odd = filter(lambda p : p%2 != 0, nums)
    
@@ -792,9 +883,12 @@ def administration(request):
       if (year<= 2021):
         my_file = pd.read_csv("media/Neww.csv", sep=None, engine='python',encoding='utf-8', error_bad_lines=False)
         df = pd.DataFrame(data=my_file, index=None)
-        df['Séance'] = (pd.to_datetime(df['Séance'])).dt.year
-        df = df[df['Séance']==year]
-        print (df)
+        # date_after = datetime.date(2020, 12,31)
+        # date_before= datetime.date(2022, 1, )
+        df['Séance'] = (pd.to_datetime(df['Séance'], format="%Y-%m-%d"))
+        df=df[(df['Séance'] > '2020-12-31') & (df['Séance'] < '2022-01-01')]
+        # df = df[df['Séance']==year]
+        print ("this is", df)
         if selected_niv :
           df = df[df['Niveau']==selected_niv]
           print (df)

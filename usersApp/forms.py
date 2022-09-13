@@ -32,6 +32,25 @@ class AjouterComment(forms.ModelForm):
         "Séance": "Séance",
         }  
 
+        widgets={
+            'Séance': forms.TextInput(attrs={'class':'form-control'}),
+            'text': forms.Textarea(attrs={'class':'form-control'})
+
+        }
+
+
+
+
+# class AjouterComment(forms.ModelForm):
+#     class Meta:
+#         model = Comment
+        
+#         fields = ('Séance', 'text')    
+#         labels = {
+#         "text": "Commentaire",
+#         "Séance": "Séance",
+#         }  
+
 
 
 

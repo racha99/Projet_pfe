@@ -1,0 +1,920 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+
+    <meta charset="utf-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no">
+    <meta name="description" content="">
+    <meta name="author" content="">
+
+    <title>SB Admin 2 - Dashboard</title>
+    {% load static %}
+    <!-- Custom fonts for this template-->
+    <link href={% static '/dashboard/vendor/fontawesome-free/css/all.min.css' %} rel="stylesheet" type="text/css">
+    <link
+        href="https://fonts.googleapis.com/css?family=Nunito:200,200i,300,300i,400,400i,600,600i,700,700i,800,800i,900,900i"
+        rel="stylesheet">
+
+     <!--  Custom styles for this template-->
+    <link href={% static '/dashboard/css/sb-admin-2.min.css' %} rel="stylesheet"> 
+
+    
+
+  
+</head>
+
+<body id="page-top">
+
+    <!-- Page Wrapper -->
+    <div id="wrapper">
+
+        <!-- Sidebar -->
+        <ul class="navbar-nav bg-gradient-dark sidebar sidebar-dark accordion" id="accordionSidebar">
+
+            <!-- Sidebar - Brand -->
+            <a class="sidebar-brand d-flex align-items-center justify-content-center" href="index.html">
+                <div class="sidebar-brand-icon rotate-n-15">
+                    
+                    <i class=" fas fa-solid fa-chalkboard"></i>
+                  
+                </div>
+                {%if user.is_teacher%}
+                <div class="sidebar-brand-text mx-3">Dashboard Professeur
+                </div>
+                {% endif%}
+
+                {%if user.is_admin%}
+                <div class="sidebar-brand-text mx-3">Dashboard Module {{ k }}
+                </div>
+                {% endif%}
+               
+            </a>
+
+            <!-- Divider -->
+            <hr class="sidebar-divider my-0">
+
+            <!-- Nav Item - Dashboard -->
+            <li class="nav-item active">
+                <a class="nav-link" href={%url 'dashboardTeacher' %}>
+                    <i class="fas fa-fw fa-tachometer-alt"></i>
+                    <span>Dashboard</span></a>
+            </li>
+
+            <!-- Divider -->
+            <hr class="sidebar-divider">
+
+            <li class="nav-item">
+                <a class="nav-link"  href={%url 'dashboardComments' %}>
+                    <i class="fas fa-thin fa-comment"></i>
+                    <span>Commentaires</span></a>
+            </li>
+
+            <!-- Nav Item - Pages Collapse Menu -->
+           
+           
+
+            <!-- Nav Item - Charts -->
+          
+
+           
+
+        </ul>
+        <!-- End of Sidebar -->
+
+        <!-- Content Wrapper -->
+        <div id="content-wrapper" class="d-flex flex-column">
+
+            <!-- Main Content -->
+            <div id="content">
+
+                <!-- Topbar -->
+                <nav class="navbar navbar-expand navbar-light bg-white topbar mb-4 static-top shadow">
+
+                    <!-- Sidebar Toggle (Topbar) -->
+                    <button id="sidebarToggleTop" class="btn btn-link d-md-none rounded-circle mr-3">
+                        <i class="fa fa-bars"></i>
+                    </button>
+
+                    <!-- Topbar Search -->
+
+<!-- 
+                    <div class="dropdown">
+                        <li class="btn btn-outline-dark btn-lg dropdown-toggle" role="button" id="userDropdown" data-toggle="dropdown" aria-expanded="false" aria-haspopup="true">
+                          Cours
+                        </li>
+
+                        <form action={% url 'select_coursDash' %} method="post">
+                            {% csrf_token %}
+                        <div class="dropdown-menu overflow-auto w-100" style="word-break: break-all;" aria-labelledby="userDropdown">
+                          {% for cours in list_cours%}
+                          
+                          <li><button  class="dropdown-item" name="cours" value={{ cours.code }} href="#">{{ cours.code }}</button></li>
+                          {% endfor %}
+                          
+                        </div>
+                        </form>
+                      </div>  -->
+                    
+                     
+                 
+
+                    <!-- Topbar Navbar -->
+                    <ul class="navbar-nav ml-auto">
+
+                        <!-- Nav Item - Search Dropdown (Visible Only XS) -->
+                        <li class="nav-item dropdown no-arrow d-sm-none">
+                            <a class="nav-link dropdown-toggle" href="#" id="searchDropdown" role="button"
+                                data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
+                                <i class="fas fa-search fa-fw"></i>
+                            </a>
+                            <!-- Dropdown - Messages -->
+                            <div class="dropdown-menu dropdown-menu-right p-3 shadow animated--grow-in"
+                                aria-labelledby="searchDropdown">
+                                <form class="form-inline mr-auto w-100 navbar-search">
+                                    <div class="input-group">
+                                        <input type="text" class="form-control bg-light border-0 small"
+                                            placeholder="Search for..." aria-label="Search"
+                                            aria-describedby="basic-addon2">
+                                        <div class="input-group-append">
+                                            <button class="btn btn-primary" type="button">
+                                                <i class="fas fa-search fa-sm"></i>
+                                            </button>
+                                        </div>
+                                    </div>
+                                </form>
+                            </div>
+                        </li>
+
+                        <!-- Nav Item - Alerts -->
+                  
+
+                        <!-- Nav Item - Messages -->
+                
+
+                        <div class="topbar-divider d-none d-sm-block"></div>
+
+                        <!-- Nav Item - User Information -->
+                        <li class="nav-item dropdown no-arrow">
+                            <a class="nav-link dropdown-toggle" href="#" id="userDropdown" role="button"
+                                data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
+                                <span class="mr-2 d-none d-lg-inline text-gray-600 small">{{ user.username }}</span>
+                                <img class="img-profile rounded-circle"
+                                    src={% static "/dashboard/img/undraw_profile.svg" %}>
+                            </a>
+                            <!-- Dropdown - User Information -->
+                            <div class="dropdown-menu dropdown-menu-right shadow animated--grow-in"
+                                aria-labelledby="userDropdown">
+                                <!-- <a class="dropdown-item" href="#">
+                                    <i class="fas fa-user fa-sm fa-fw mr-2 text-gray-400"></i>
+                                    Profile
+                                </a>
+                                <a class="dropdown-item" href="#">
+                                    <i class="fas fa-cogs fa-sm fa-fw mr-2 text-gray-400"></i>
+                                    Settings
+                                </a>
+                                <a class="dropdown-item" href="#">
+                                    <i class="fas fa-list fa-sm fa-fw mr-2 text-gray-400"></i>
+                                    Activity Log
+                                </a> -->
+                               
+                                <a class="dropdown-item" href="#" data-toggle="modal" data-target="#logoutModal">
+                                    <i class="fas fa-sign-out-alt fa-sm fa-fw mr-2 text-gray-400"></i>
+                                    Logout
+                                </a>
+                            </div>
+                        </li>
+
+                    </ul>
+
+                </nav>
+                <!-- End of Topbar -->
+
+                <!-- Begin Page Content -->
+                <div class="container-fluid">
+                    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.2.0-beta1/dist/js/bootstrap.bundle.min.js" integrity="sha384-pprn3073KE6tl6bjs2QrFaJGz5/SUsLqktiwsUTF55Jfv3qYSDhgCecCxMW52nD2" crossorigin="anonymous"></script>
+    
+                    {% if msg %}
+                    <div class="alert alert-warning alert-dismissible fade show" role="alert">
+                        <strong>Oups!</strong> {{ msg | safe }}
+                        <button type="button" class="close" data-dismiss="alert" aria-label="Close">
+                          <span aria-hidden="true">&times;</span>
+                        </button>
+                      </div>
+                        
+                    {% endif %}
+
+             
+
+                    <!-- Page Heading -->
+                    <!-- <div class="d-sm-flex align-items-center justify-content-between mb-4">
+                        <h1 class="h3 mb-0 text-gray-800">Dashboard</h1>
+                    </div> -->
+
+                  
+                    
+                       
+                      
+                      
+
+                    <!-- Content Row -->
+                    
+                    <div class="container ">
+                        {%if user.is_teacher%}
+                       
+                        <div class="row">
+                            {% csrf_token %}
+                            <div class="col">
+                        
+                                <div class="dropdown text-center mb-3">
+            
+                                    <button class="btn btn-outline-dark dropdown-toggle w-100" type="button" id="dropdownMenuButton1" data-bs-toggle="dropdown" aria-expanded="false">
+                                        Cours
+                                    </button>
+                                    <ul class="dropdown-menu" aria-labelledby="dropdownMenuButton1">
+                                        <form action={% url 'select_coursDash' %} method="POST">
+                                            {% csrf_token %}
+                                        <div class="w-100">
+                                          {% for cours in list_cours%}
+                                          
+                                          <li><button  class="dropdown-item w-100" name="cours" value={{ cours.code }} href="#">{{ cours.code }}</button></li>
+                                          {% endfor %}
+                                          
+                                        </div>
+                                        </form>
+                                    </ul>
+                                  </div>
+                            </div>
+    
+                            <div class="col">
+                                <div class="dropdown text-center mb-3">
+            
+                                    <button class="btn btn-outline-dark dropdown-toggle w-100" type="button" id="dropdownMenuButton1" data-bs-toggle="dropdown" aria-expanded="false">
+                                        Année
+                                    </button>
+                                    <ul class="dropdown-menu" aria-labelledby="dropdownMenuButton1">
+                                        <form action={% url 'select_annee' %} method="POST">
+                                            {% csrf_token %}
+                                            <div class="w-100">
+                                                <li><button  class="dropdown-item w-100" name="annee" value='2022' href="#">2022</button></li>
+                                                <li><button  class="dropdown-item w-100" name="annee" value='2021' href="#">2021</button></li>
+                                                <li><button  class="dropdown-item w-100" name="annee" value='2020' href="#">2020</button></li>
+                                                <li><button  class="dropdown-item w-100" name="annee" value='2019' href="#">2019</button></li>
+                                                <li><button  class="dropdown-item w-100" name="annee" value='2018' href="#">2018</button></li>
+                                                <li><button  class="dropdown-item w-100" name="annee" value='2017' href="#">2017</button></li>
+                                                <li><button  class="dropdown-item w-100" name="annee" value='2016' href="#">2016</button></li>
+                                            </div>
+                                        </form>
+                                    </ul>
+                                  </div>
+                            </div>
+                        </div>
+                        {%endif%}
+                        <div class="row ">
+                          <div class="col ">
+                            <div class="card h-100">
+                                <div class="card-body">
+                                    <h5 class="card-title text-center">Polarité géneral</h5>
+                                    <div class="pt-4 pb-2" id="canvas-holder" style="width:100%">
+                                        <canvas id="doughnutPolarityChart"></canvas>
+                                      </div>
+                                      <div class="mt-4 text-center small">
+                                        <span class="mr-2">
+                                            <i class="fas fa-circle text-success"></i> Positive
+                                        </span>
+                                        <span class="mr-2">
+                                            <i class="fas fa-circle text-warning"></i> Neutre
+                                        </span>
+                                        <span class="mr-2">
+                                            <i class="fas fa-circle text-danger"></i> Negatve
+                                        </span>
+
+                                       
+                                    </div>
+                                </div>
+                              </div>
+                          </div>
+                          <div class="col ">
+                                <div class="card">
+                                    <div class="card-body">
+                                        <h5 class="card-title text-center">Motivation géneral</h5>
+                                        <div class="chart-pie pt-4 pb-2">
+                                            <canvas id="myPieChart"></canvas>
+                                        </div>
+
+                                        <div class="mt-4 text-center small">
+                                            <span class="mr-2">
+                                                <i class="fas fa-circle text-success"></i> Intrinseque
+                                            </span>
+                                            <span class="mr-2">
+                                                <i class="fas fa-circle text-danger"></i> Cout
+                                            </span>
+                                            <span class="mr-2">
+                                                <i class="fas fa-circle text-primary"></i> Utilité
+                                            </span>
+    
+                                            <span class="mr-2">
+                                                <i class="fas fa-circle text-warning"></i> Accomplissement
+                                            </span>
+                                        </div>
+                                    </div>
+                                </div>
+                          </div>
+                     
+                        </div>
+
+
+
+                        <div class="row">
+                            <div class="col">
+                                <div class="card h-100">
+                                    <div class="card-body">
+                                        <h5 class="card-title text-center">Attitude géneral</h5>
+                                        <div class="pt-5 pb-2">
+                                            <div class="progress">
+
+                                                <div class="progress-bar bg-success" id="pAttitude" role="progressbar" style="width: {{ attitude_a }}%" aria-valuenow={{ attitude_a }} aria-valuemin="0" aria-valuemax="100">{{ attitude_a }}</div>
+                                                <div class="progress-bar bg-secondary" id="neAttitude" role="progressbar" style="width: {{ attitude_ne }}%" aria-valuenow={{ attitude_ne }} aria-valuemin="0" aria-valuemax="100">{{ attitude_ne }}</div>
+                                                <div class="progress-bar bg-danger" id="neAttitude" role="progressbar" style="width: {{ attitude_h }}%" aria-valuenow={{ attitude_h }} aria-valuemin="0" aria-valuemax="100">{{ attitude_h }}</div>
+             
+                                            </div>
+                                        </div>
+
+                                        <div class="mt-4 text-center small">
+                                            <span class="mr-2">
+                                                <i class="fas fa-circle text-success"></i> Positive
+                                            </span>
+                                            <span class="mr-2">
+                                                <i class="fas fa-circle text-secondary"></i> Neutre
+                                            </span>
+                                            <span class="mr-2">
+                                                <i class="fas fa-circle text-danger"></i> Negative
+                                            </span>
+    
+                                           
+                                        </div>
+
+                                       
+                                        
+                                    </div>
+                                </div>
+                          </div>
+                        </div>
+
+                        <!-- row two -->
+
+                        <div class="row ">
+                            <div class="col ">
+                              <div class="card h-100">
+                                  <div class="card-body">
+                                      <h5 class="card-title text-center">Nuage des mots les plus utilisés</h5>
+                                      
+                                      {% load static %}
+                                      <img class="rounded w-100" src="{% static '/images/wordcloud.png' %}" alt="My image">
+                  
+                                         
+                                      </div>
+                                  </div>
+                                </div>
+                            
+                            <div class="col ">
+                                  <div class="card h-100">
+                                      <div class="card-body">
+                                          <h5 class="card-title text-center">Attente géneral</h5>
+                                          <div class=" pt-4 chart-pie">
+                                            <canvas id="pie-chartEx"></canvas>
+                                        </div>
+                                              
+                                          </div>
+  
+                                          <div class="mt-4 text-center small">
+                                              <span class="mr-2">
+                                                  <i class="fas fa-circle text-success"></i> Positive
+                                              </span>
+
+                                              <span class="mr-2">
+                                                <i class="fas fa-circle text-secondary"></i> Neutre
+                                            </span>
+                                              <span class="mr-2">
+                                                  <i class="fas fa-circle text-danger"></i> Negative
+                                              </span>
+                            
+                                          </div>
+                                      </div>
+                                  </div>
+                            </div>
+                            
+                            
+
+                          <div class="row">
+
+                            <!-- Content Column -->
+                            <div class="col">
+    
+                                
+    
+    
+                                <div class="card">
+                                   
+                                    <div class="card-body">
+                                        <h5 class="card-title text-center">Nombre de commentaire par polarité pour chaque aspect
+                                        </h5>
+                                        <div class="chart-bar">
+                                            <canvas id="bar-chartpa"></canvas>
+                                        </div>
+                                        
+                                    
+                                    </div>
+                                </div>
+                                 
+                              
+    
+                            
+    
+                            </div>
+    
+                            
+    
+                        
+                            <div class="col">
+    
+                                <div class="card h-100">
+                                    
+                                    <div class="card-body">
+                                        <h5 class="card-title text-center">Evolution des émotions dans le temps
+                                        </h5>
+                                        <div>
+                                            <canvas id="myLine"></canvas>
+                                        </div>
+                                        
+                                    
+                                    </div>
+                                </div>
+                            </div>
+    
+    
+    
+                                <!-- Color System -->
+                                
+    
+                         
+                        
+    
+                    </div>
+
+
+
+
+
+                          </div>
+                          
+
+
+
+
+
+
+
+
+
+
+                      </div>
+
+    
+                <!-- /.container-fluid -->
+
+            </div>
+            <!-- End of Main Content -->
+
+            <!-- Footer -->
+            <footer class="sticky-footer bg-white">
+                <div class="container my-auto">
+                    <div class="copyright text-center my-auto">
+                        <span>Copyright &copy; Your Website 2021</span>
+                    </div>
+                </div>
+            </footer>
+            <!-- End of Footer -->
+
+        </div>
+        <!-- End of Content Wrapper -->
+
+    </div>
+    <!-- End of Page Wrapper -->
+
+    <!-- Scroll to Top Button-->
+    <a class="scroll-to-top rounded" href="#page-top">
+        <i class="fas fa-angle-up"></i>
+    </a>
+
+    <!-- Logout Modal-->
+    <div class="modal fade" id="logoutModal" tabindex="-1" role="dialog" aria-labelledby="exampleModalLabel"
+        aria-hidden="true">
+        <div class="modal-dialog" role="document">
+            <div class="modal-content">
+                <div class="modal-header">
+                    <h5 class="modal-title" id="exampleModalLabel">Ready to Leave?</h5>
+                    <button class="close" type="button" data-dismiss="modal" aria-label="Close">
+                        <span aria-hidden="true">×</span>
+                    </button>
+                </div>
+                <div class="modal-body">Etes-vous sûr de vouloir vous déconnecter</div>
+                <div class="modal-footer">
+                    <button class="btn btn-secondary" type="button" data-dismiss="modal">Annuler</button>
+                    <a class="btn btn-primary" href={% url 'logout' %}>Oui</a>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- Bootstrap core JavaScript-->
+    <script src={% static "dashboard/vendor/jquery/jquery.min.js" %}></script>
+    <script src={% static "dashboard/vendor/bootstrap/js/bootstrap.bundle.min.js" %}></script>
+
+    <!-- Core plugin JavaScript-->
+    <script src={% static "dashboard/vendor/jquery-easing/jquery.easing.min.js" %}></script>
+
+    <!-- Custom scripts for all pages-->
+    <script src={% static "dashboard/js/sb-admin-2.min.js" %}></script>
+
+    <!-- Page level plugins -->
+    <!-- <script src={% static "dashboard/vendor/chart.js/Chart.min.js" %}></script> -->
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/Chart.js/2.7.1/Chart.min.js"></script>
+
+
+    <!-- Page level custom scripts -->
+    <script src={% static "dashboard/js/demo/chart-area-demo.js" %}></script>
+   
+
+
+    <!--script for the gauge chart-->
+    <script src="https://unpkg.com/chart.js@2.8.0/dist/Chart.bundle.js"></script>
+    <script src="https://unpkg.com/chartjs-gauge@0.3.0/dist/chartjs-gauge.js"></script>
+    <script src="https://unpkg.com/chartjs-plugin-datalabels@0.7.0/dist/chartjs-plugin-datalabels.js"></script>
+
+    <script src="https://cdn.jsdelivr.net/npm/@popperjs/core@2.11.5/dist/umd/popper.min.js" integrity="sha384-Xe+8cL9oJa6tN/veChSP7q+mnSPaj5Bcu9mPX5F5xIGE0DVittaqT5lorf0EI7Vk" crossorigin="anonymous"></script>
+    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.2.0-beta1/dist/js/bootstrap.bundle.min.js" integrity="sha384-pprn3073KE6tl6bjs2QrFaJGz5/SUsLqktiwsUTF55Jfv3qYSDhgCecCxMW52nD2" crossorigin="anonymous"></script>
+     
+    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.2.0-beta1/dist/js/bootstrap.min.js" integrity="sha384-kjU+l4N0Yf4ZOJErLsIcvOU2qSb74wXpOhqTvwVx3OElZRweTnQ6d31fXEoRD1Jy" crossorigin="anonymous"></script>
+  
+           
+
+    <!-- progressbar value -->
+
+<script>
+document.getElementById("pAttitude").value =5;
+
+</script>
+
+<script>
+new Chart(document.getElementById("myPieChart"),{
+            type: "pie",
+            data: {
+            labels: {{ listkeys_V| safe }},
+            datasets: [{
+            data: {{listvalues_V| safe }},
+            backgroundColor: ['#4e73df','#1cc88a', '#f6c23e','#e74a3b'],
+            hoverBackgroundColor: ['#4e73df','#1cc88a', '#f6c23e','#e74a3b'],
+            hoverBorderColor: "rgba(234, 236, 244, 1)",
+    }],
+  },
+  options: {
+    maintainAspectRatio: false,
+    tooltips: {
+      backgroundColor: "rgb(255,255,255)",
+      bodyFontColor: "#858796",
+      borderColor: '#dddfeb',
+      borderWidth: 1,
+      xPadding: 15,
+      yPadding: 15,
+      displayColors: false,
+      caretPadding: 10,
+    },
+    legend: {
+      display: false
+    },
+    cutoutPercentage: 80,
+  },
+});
+</script>
+
+<!-- polarité general -->
+<script>
+var ctx = document.getElementById("doughnutPolarityChart");
+    var dashboardChart = new Chart(ctx, {
+        type: 'doughnut',
+        data: {
+            labels: ["Polarité positive", "Polarité neutre", "Polarité negative"],
+            datasets: [{
+                label: '# of Votes',
+                data: [{{ p }}, {{ ne }}, {{ n }}],
+                backgroundColor: [
+                    'rgba(46, 204, 113, 1)',
+                    'rgba(255, 164, 46, 1)',
+                    'rgba(231, 76, 60, 1)',
+                    
+                ],
+                borderColor: [
+                    'rgba(255, 255, 255 ,1)',
+                    'rgba(255, 255, 255 ,1)',
+                    'rgba(255, 255, 255 ,1)'
+                ],
+                borderWidth: 7
+            }]
+
+        },
+        options: {
+            rotation: 1 * Math.PI,
+            circumference: 1 * Math.PI,
+            legend: {
+                display: false
+            },
+            tooltip: {
+                enabled: false
+            },
+            cutoutPercentage: 80
+        }
+    });
+</script>
+
+
+
+
+
+
+    <script >
+        var ctx = document.getElementById("chart").getContext("2d");
+
+var chart = new Chart(ctx, {
+  type: 'gauge',
+  data: {
+    datasets: [{
+      value: 0.5,
+      minValue: 0,
+      data: [1, 2, 3, 4],
+      backgroundColor: ['green', 'yellow', 'orange', 'red'],
+    }]
+  },
+  options: {
+    needle: {
+      radiusPercentage: 2,
+      widthPercentage: 3.2,
+      lengthPercentage: 80,
+      color: 'rgba(0, 0, 0, 1)'
+    },
+    valueLabel: {
+      display: true,
+      formatter: (value) => {
+        return '$' + Math.round(value);
+      },
+      color: 'rgba(255, 255, 255, 1)',
+      backgroundColor: 'rgba(0, 0, 0, 1)',
+      borderRadius: 5,
+      padding: {
+        top: 10,
+        bottom: 10
+      }
+    }
+  }
+});
+    </script>
+
+<!-- polarité par aspect bar-chart -->
+
+    <script>
+        // Set new default font family and font color to mimic Bootstrap's default styling
+Chart.defaults.global.defaultFontFamily = 'Nunito', '-apple-system,system-ui,BlinkMacSystemFont,"Segoe UI",Roboto,"Helvetica Neue",Arial,sans-serif';
+Chart.defaults.global.defaultFontColor = '#858796';
+
+function number_format(number, decimals, dec_point, thousands_sep) {
+  // *     example: number_format(1234.56, 2, ',', ' ');
+  // *     return: '1 234,56'
+  number = (number + '').replace(',', '').replace(' ', '');
+  var n = !isFinite(+number) ? 0 : +number,
+    prec = !isFinite(+decimals) ? 0 : Math.abs(decimals),
+    sep = (typeof thousands_sep === 'undefined') ? ',' : thousands_sep,
+    dec = (typeof dec_point === 'undefined') ? '.' : dec_point,
+    s = '',
+    toFixedFix = function(n, prec) {
+      var k = Math.pow(10, prec);
+      return '' + Math.round(n * k) / k;
+    };
+  // Fix for IE parseFloat(0.55).toFixed(0) = 0;
+  s = (prec ? toFixedFix(n, prec) : '' + Math.round(n)).split('.');
+  if (s[0].length > 3) {
+    s[0] = s[0].replace(/\B(?=(?:\d{3})+(?!\d))/g, sep);
+  }
+  if ((s[1] || '').length < prec) {
+    s[1] = s[1] || '';
+    s[1] += new Array(prec - s[1].length + 1).join('0');
+  }
+  return s.join(dec);
+}
+
+// Bar Chart Example
+new Chart(document.getElementById("bar-chartpa"), {
+                type: 'bar',
+                data: {
+                    labels: {{ keys_Ag | safe }},
+                    datasets: [
+                        {
+                            label:'Positive',
+                            backgroundColor:'#FD6C9E',
+                            data: {{ listvaluespa_P | safe }},
+                            
+                              
+                        },
+                        {
+                            label: 'Négative',
+                            backgroundColor: '#AF7AC5',
+                            data: {{ listvaluespa_N | safe }},
+                              
+                        },
+                        {
+                            label: 'Neutre',
+                            backgroundColor: '#5DADE2',
+                            data: {{ listvaluespa_NE | safe }},
+                              
+                        }
+                ],
+                    
+                },
+                options: {
+                    
+                    scales: {
+                        yAxes: [{
+                            ticks: {
+                                beginAtZero: true
+                                        }
+                                    }]
+                                },
+                        
+                        title: {
+                             display: true,
+                             text: 'Nombre de commentaires par Polarité pour chaque Aspect',
+                        }
+
+
+
+                }
+   
+        });
+
+        
+
+    </script>
+
+    
+<!--pie chart expectancy -->
+
+
+<script>
+     new Chart(document.getElementById("pie-chartEx"), {
+        type: "pie",
+            data: {
+            labels: {{ listkeys_Ex| safe }},
+            datasets: [{
+            data: {{listvalues_Ex| safe }},
+            backgroundColor: ['rgba(189, 195, 199)',    
+                            'rgba(231, 76, 60, 1)',
+                            'rgba(46, 204, 113, 1)',],
+            hoverBackgroundColor: [
+            'rgba(189, 195, 199)',    
+            
+                                    'rgba(231, 76, 60, 1)',
+                                    'rgba(46, 204, 113, 1)',
+                                    
+                                    ],
+            hoverBorderColor: "rgba(234, 236, 244, 1)",
+    }],
+  },
+  options: {
+    maintainAspectRatio: false,
+    tooltips: {
+      backgroundColor: "rgb(255,255,255)",
+      bodyFontColor: "#858796",
+      borderColor: '#dddfeb',
+    //   borderWidth: 1,
+      xPadding: 15,
+      yPadding: 15,
+      displayColors: false,
+      caretPadding: 10,
+    },
+    legend: {
+      display: false
+    },
+    //cutoutPercentage: 80,
+  },
+});
+</script>
+
+
+    <script>
+    
+       
+       
+
+
+
+
+        var object1 = JSON.parse(JSON.stringify({{ listvalues_S1|safe }}))
+        var object2 = JSON.parse(JSON.stringify({{ listvalues_S2|safe }}))
+        var object3 = JSON.parse(JSON.stringify({{ listvalues_S3|safe }}))
+
+        console.log({{ listvalues_S2|safe }})
+        
+
+        var ctx = document.getElementById("myLine");
+
+        var myLineChart = new Chart(ctx, {
+                labels:[],
+                type: 'line',
+                data: {
+                    
+                    datasets: [{
+                        label: 'Joie',
+                        data: {{ listvalues_S1|safe }} ,
+                        fill: false,
+                      
+                        borderColor: 'rgb(75, 192, 192)',
+                        tension: 0.1,
+                        pointRadius: 0,
+                    },
+
+                    {
+                        label: 'Mécontentement',
+                        data: object2,
+                        
+                        fill: false,
+                        
+                        borderColor: '#e74a3b',
+                        tension: 0.1
+                    },
+
+                    {
+                        label: 'Anxieté',
+                        data: object3,
+                        fill: false,
+                        
+                        
+                        borderColor: '#858796',
+                        tension: 0.1
+                    }
+                ]
+                    }, 
+                    options:{
+                        plugins: {
+                        // Change options for ALL labels of THIS CHART
+                                datalabels: {
+                                    display:false,
+                                    
+                                }
+                        },
+                                            // legend: {
+                        //         display: false //This will do the task
+                        //     },
+                        // scales: {
+                        
+                        //     x: {
+                        //         type:"time",
+                        //         time: {
+                        //             displayFormats: {
+                        //                 quarter: "dd/MM/yyyy",
+                        //             },
+                                
+                        //         scaleLabel: {
+                        //             display:     true,
+                        //             labelString: 'Date'
+                        //         }
+                        //     },
+
+                        scales: {
+					xAxes: [{
+                        
+						type: 'time',
+						time: {
+							parser: 'YYYY-MM-DD',
+							// round: 'day'
+							tooltipFormat: 'YYYY-MM-DD'
+						},
+						// scaleLabel: {
+						// 	display: true,
+						// 	labelString: 'Date'
+						// }
+					}],
+                    yAxes: [{
+                            ticks: {
+                                beginAtZero: true
+                                        }
+                                    }]
+                               
+				},
+
+ }
+                   
+                });
+    </script>
+</body>
+
+</html>
