@@ -29,7 +29,7 @@
                             <button class="btn btn-outline-primary dropdown-toggle w-100 " type="button"
                                 id="dropdownMenuButton" data-bs-toggle="dropdown" aria-haspopup="true"
                                 aria-expanded="false">
-                                Modules
+                                {{ mod }}
                             </button>
                             <form action={% url 'select_module_etudiant' %} method="post">
                                 {% csrf_token %}

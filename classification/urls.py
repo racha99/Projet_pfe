@@ -5,7 +5,7 @@ from . import views
 urlpatterns = [
    # path('', views.Home, name='Home'),
     path('classification', views.Classification, name='Classification'),
-    path('modeles', views.Modeles, name='Modeles'),
+   
     path('construction', views.Construction, name='Construction'),
     
     path('ajax-posting/', views.ajax_posting, name='ajax_posting'),# ajax-posting / name = that we will use in ajax url
@@ -16,7 +16,6 @@ urlpatterns = [
     path('', views.index, name='index'),
     path('results', views.results, name='results'),
     path('association', views.association, name='association'),
-    path('clusteringkmeans', views.clustering, name='clusteringkmeans'),
-    path('clusteringKmodes', views.clustering_kmodes, name='clusteringKmodes'),
+    
     
     ]

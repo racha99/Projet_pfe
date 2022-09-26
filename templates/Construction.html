@@ -89,11 +89,13 @@
                              <div class="row ">
                                    <select id="nvclass" name="nvclass" class="form-select" required aria-label="select example" style="width:15;">
                                    <option value="p"selected>Polarité</option>
-                                   <option value="ta">Aspect</option>
-                                   <option value="ts">Sentiment</option>
                                    <option value="at">Attitude</option>
-                                   <option value="t">Valeur</option>
                                    <option value="e">Attente</option>
+                                   <option value="ta">Aspects</option>
+                                   <option value="ts">Sentiments</option>
+                                  
+                                   <option value="t">Valeurs</option>
+                                  
                                   
                                     <!-- zzz -->
                                    
@@ -105,16 +107,17 @@
                              <div class="row ">
                                    <select id="classif" class="form-select" name="classif" required aria-label="select example" style="width:15;">
                                    <option value="svm">SVM</option>
-                                   <option value="kpp">KPP</option>
-                                   <option value="rna">RNA</option>
-                                   <option value="mlknn">MLKNN</option>
-                                   <option value="brrf">RF {BR}</option>
-                                   <option value="brsvm">SVM {BR}</option>
-                                   <option value="brknn">KNN {BR}</option>
-                                   <option value="brmlp">MLP {BR}</option>
-                                   <option value="lprf">RF {LP}</option>
-                                   <option value="lpsvm">SVM {LP}</option>
-                                   <option value="lpknn">KNN {LP}</option>
+                                   <option value="kpp">KNN</option>
+                                   <option value="rna">MLP</option>
+                                   <!-- <option value="mlknn">MLKNN</option>
+                                   <option value="brrf">RF avec BR</option>
+                                   <option value="brsvm">SVM avec BR</option>
+                                   <option value="brknn">KNN avec BR</option>
+                                   <option value="brmlp">MLP avec BR</option>
+                                   <option value="lprf">RF avec LP</option>
+                                   <option value="lpsvm">SVM avec LP</option>
+                                   <option value="lpknn">KNN avec LP</option>
+                                   <option value="lpmlp">MLP avec LP</option> -->
                                    </select>
                              </div>  
                               
@@ -129,18 +132,19 @@
                               $('#classif option').remove();
                               if($("#nvclass option:selected").val()=="p"|| $("#nvclass option:selected").val()=="at"||$("#nvclass option:selected").val()=="e"){
                                   $('#classif').append('<option value="svm">SVM</option>');
-                                  $('#classif').append('<option value="kpp">KPP</option>');
-                                  $('#classif').append('<option value="rna">RNA</option>');
+                                  $('#classif').append('<option value="kpp">KNN</option>');
+                                  $('#classif').append('<option value="rna">MLP</option>');
                                   }
                               else if($("#nvclass option:selected").val()=="ta"||$("#nvclass option:selected").val()=="ts"||$("#nvclass option:selected").val()=="t"){
                                   $('#classif').append('<option value="mlknn">MLKNN</option>');
-                                  $('#classif').append('<option value="brrf">RF {BR}</option>');
-                                  $('#classif').append('<option value="brsvm">SVM {BR}</option>');
-                                  $('#classif').append('<option value="brknn">KNN {BR}</option>');
-                                  $('#classif').append('<option value="brmlp">MLP {BR}</option>');
-                                  $('#classif').append('<option value="lprf">RF {LP}</option>');
-                                  $('#classif').append('<option value="lpsvm">SVM {LP}</option>');
-                                  $('#classif').append('<option value="lpknn">KNN {LP}</option>');
+                                  $('#classif').append('<option value="brrf">RF avec BR</option>');
+                                  $('#classif').append('<option value="brsvm">SVM avec BR</option>');
+                                  $('#classif').append('<option value="brknn">KNN avec BR</option>');
+                                  $('#classif').append('<option value="brmlp">MLP avec BR</option>');
+                                  $('#classif').append('<option value="lprf">RF avec LP</option>');
+                                  $('#classif').append('<option value="lpsvm">SVM avec LP</option>');
+                                  $('#classif').append('<option value="lpknn">KNN avec LP</option>');
+                                  $('#classif').append('<option value="lpmlp">MLP avec LP</option>');
                                   }
                               });
                               </script>

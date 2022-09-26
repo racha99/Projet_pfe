@@ -31,13 +31,13 @@
               <div class="dropdown text-center mb-3">
 
                   <button class="btn btn-outline-primary dropdown-toggle w-100" type="button" id="dropdownMenuButton1" data-bs-toggle="dropdown" aria-expanded="false">
-                      Cours
+                      {{ module }}
                   </button>
                   <ul class="dropdown-menu w-100" aria-labelledby="dropdownMenuButton1">
                       <form action={% url 'select_coursDash' %} method="POST">
                           {% csrf_token %}
                       <div class="w-100">
-                        {% for cours in list_cours%}
+                        {% for cours in modules %}
                         
                         <li><button  class="dropdown-item w-100" name="cours" value={{ cours.code }} href="#">{{ cours.code }}</button></li>
                         {% endfor %}
@@ -53,7 +53,7 @@
               <div class="dropdown text-center mb-3">
 
                   <button class="btn btn-outline-primary dropdown-toggle w-100" type="button" id="dropdownMenuButton1" data-bs-toggle="dropdown" aria-expanded="false">
-                      Année
+                      {{ year }}
                   </button>
                   <ul class="dropdown-menu w-100" aria-labelledby="dropdownMenuButton1">
                       <form action={% url 'select_annee' %} method="POST">
@@ -61,11 +61,7 @@
                           <div class="w-100">
                               <li><button  class="dropdown-item w-100" name="annee" value='2022' href="#">2022</button></li>
                               <li><button  class="dropdown-item w-100" name="annee" value='2021' href="#">2021</button></li>
-                              <li><button  class="dropdown-item w-100" name="annee" value='2020' href="#">2020</button></li>
-                              <li><button  class="dropdown-item w-100" name="annee" value='2019' href="#">2019</button></li>
-                              <li><button  class="dropdown-item w-100" name="annee" value='2018' href="#">2018</button></li>
-                              <li><button  class="dropdown-item w-100" name="annee" value='2017' href="#">2017</button></li>
-                              <li><button  class="dropdown-item w-100" name="annee" value='2016' href="#">2016</button></li>
+                             
                           </div>
                       </form>
                   </ul>
@@ -108,28 +104,14 @@
             <div class="col-md-4">
                 <div class="card">
                     <div class="card-header">
-                        <h6 class="text-center">Motivation général</h6>
+                        <h6 class="text-center">Motivation générale</h6>
                     </div>
                     <div class="card-body">
-                        <div class="chart-pie pt-4 pb-2">
-                            <canvas id="myPieChart"></canvas>
+                        <div class="chart-pie pt-2 pb-2">
+                            <canvas id="myPieChart" width="370"></canvas>
                         </div>
 
-                        <div class="mt-4 text-center small">
-                            <span class="mr-2">
-                                <i class="fa fa-circle text-success"></i> Intrinseque
-                            </span>
-                            <span class="mr-2">
-                                <i class="fa fa-circle text-danger"></i> Cout
-                            </span>
-                            <span class="mr-2">
-                                <i class="fa fa-circle text-primary"></i> Utilité
-                            </span>
-
-                            <span class="mr-2">
-                                <i class="fa fa-circle text-warning"></i> Accomplissement
-                            </span>
-                        </div>
+                     
                     </div>
                 </div>
             </div>
@@ -159,14 +141,10 @@
                   
                     <div class="pt-5 pb-2">
                         <div class="progress">
-                          <!-- <div class="progress-bar bg-success" id="pAttitude" role="progressbar" style="width: 75%" aria-valuenow=80 aria-valuemin="0" aria-valuemax="100">75%</div>
-                          <div class="progress-bar bg-secondary" id="neAttitude" role="progressbar" style="width: 7%" aria-valuenow=2 aria-valuemin="0" aria-valuemax="100">7%</div>
-                          <div class="progress-bar bg-danger" id="neAttitude" role="progressbar" style="width: 18%" aria-valuenow=18 aria-valuemin="0" aria-valuemax="100">18%</div> -->
-
-
-                            <div class="progress-bar bg-success" id="pAttitude" role="progressbar" style="width: {{ attitude_a }}%" aria-valuenow={{ attitude_a }} aria-valuemin="0" aria-valuemax="100">{{ attitude_a }}</div>
-                            <div class="progress-bar bg-secondary" id="neAttitude" role="progressbar" style="width: {{ attitude_ne }}%" aria-valuenow={{ attitude_ne }} aria-valuemin="0" aria-valuemax="100">{{ attitude_ne }}</div>
-                            <div class="progress-bar bg-danger" id="neAttitude" role="progressbar" style="width: {{ attitude_h }}%" aria-valuenow={{ attitude_h }} aria-valuemin="0" aria-valuemax="100">{{ attitude_h }}</div>
+                        
+                            <div class="progress-bar bg-success" id="pAttitude" role="progressbar" style="width: {{ attitude_a }}%" aria-valuenow={{ attitude_a }} aria-valuemin="0" aria-valuemax="100">{{ attitude_a }}%</div>
+                            <div class="progress-bar bg-secondary" id="neAttitude" role="progressbar" style="width: {{ attitude_ne }}%" aria-valuenow={{ attitude_ne }} aria-valuemin="0" aria-valuemax="100">{{ attitude_ne }}%</div>
+                            <div class="progress-bar bg-danger" id="neAttitude" role="progressbar" style="width: {{ attitude_h }}%" aria-valuenow={{ attitude_h }} aria-valuemin="0" aria-valuemax="100">{{ attitude_h }}%</div>
 
                         </div>
                     </div>
@@ -199,19 +177,7 @@
                       
                   </div>
 
-                  <div class="mt-1 text-center small">
-                      <span class="mr-2">
-                          <i class="fa fa-circle text-success"></i> Positive
-                      </span>
-
-                      <span class="mr-2">
-                        <i class="fa fa-circle text-secondary"></i> Neutre
-                    </span>
-                      <span class="mr-2">
-                          <i class="fa fa-circle text-danger"></i> Negative
-                      </span>
-    
-                  </div>
+                  
               </div>
           </div>
         </div>
@@ -219,7 +185,7 @@
             <div class="col-6">
                 <div class="card">
                     <div class="card-header">
-                        <h6 class="text-center">Nombre de commentaires par polarité et par Aspect</h6>
+                        <h6 class="text-center">Polarité par aspects</h6>
                     </div>
                     <div class="card-body">
                         <div class="chart-bar">
@@ -231,7 +197,7 @@
             <div class="col-6">
               <div class="card">
                   <div class="card-header">
-                      <h6 class="text-center">Evolution des emotions dans le temps</h6>
+                      <h6 class="text-center">Evolution des émotions dans le temps</h6>
                   </div>
                   <div class="card-body">
                       
@@ -260,9 +226,7 @@
 <script src="https://unpkg.com/chart.js@2.8.0/dist/Chart.bundle.js"></script>
 <script src="https://unpkg.com/chartjs-gauge@0.3.0/dist/chartjs-gauge.js"></script>
 <script>
-  var object1 = JSON.parse(JSON.stringify({{ listvalues_S1|safe }}));
-  var object2 = JSON.parse(JSON.stringify({{ listvalues_S2|safe }}));
-  var object3 = JSON.parse(JSON.stringify({{ listvalues_S3|safe }}));
+ 
 
   console.log({{ listvalues_S8|safe }});
 var ctx = document.getElementById("ligne");
@@ -276,6 +240,7 @@ var ligneChart = new Chart(ctx, {
                   data: {{ listvalues_S8|safe }},
                   fill: false,
                   borderColor: '#a8c74d',
+                  backgroundColor:'#a8c74d',
                   tension: 0.1
               },
 
@@ -284,6 +249,7 @@ var ligneChart = new Chart(ctx, {
                   data: {{ listvalues_S1|safe }},
                   fill: false,
                   borderColor: '#eec400',
+                  backgroundColor:'#eec400',
                   tension: 0.1
               },
 
@@ -292,6 +258,7 @@ var ligneChart = new Chart(ctx, {
                   data: {{ listvalues_S2|safe }},
                   fill: false,
                   borderColor: '#d14334',
+                  backgroundColor:'#d14334',
                   tension: 0.1
               },
               {
@@ -299,6 +266,7 @@ var ligneChart = new Chart(ctx, {
                   data: {{ listvalues_S3|safe }},
                   fill: false,
                   borderColor: '#2c3e56',
+                  backgroundColor:'#2c3e56',
                   tension: 0.1
               },
 
@@ -307,6 +275,7 @@ var ligneChart = new Chart(ctx, {
                   data: {{ listvalues_S4|safe }},
                   fill: false,
                   borderColor: '#15151c',
+                  backgroundColor:'#15151c',
                   tension: 0.1
               },
 
@@ -315,6 +284,7 @@ var ligneChart = new Chart(ctx, {
                   data: {{ listvalues_S5|safe }},
                   fill: false,
                   borderColor: '#8f9e9d',
+                  backgroundColor:'#8f9e9d',
                   tension: 0.1
               },
 
@@ -322,6 +292,7 @@ var ligneChart = new Chart(ctx, {
                   label: "Confusion",
                   data: {{ listvalues_S6|safe }},
                   fill: false,
+                  backgroundColor:'#eae3d2',
                   borderColor: '#eae3d2',
                   tension: 0.1
               },
@@ -331,6 +302,7 @@ var ligneChart = new Chart(ctx, {
                   data: {{ listvalues_S7|safe }},
                   fill: false,
                   borderColor: ' #ff9944 ',
+                  backgroundColor:' #ff9944 ',
                   tension: 0.1
               },
 
@@ -345,23 +317,39 @@ var ligneChart = new Chart(ctx, {
           ]
       },
       options: {
+        legend: {
+            position: 'bottom',
+            labels:{
+              boxWidth:10,
+            
+              
+            }
+        },
+        
+
           responsive: true,
+          
           title:      {
               display: true,
               
+              
           },
+          
           scales:     {
               xAxes: [{
                   type:       "time",
                   time:       {
                       parser: 'YYYY-MM-DD',
-                      tooltipFormat: 'YYYY-MM-DD'
+                      tooltipFormat: 'YYYY-MM-DD',
+                      unit:'week'
                   },
+            
                  
               }],
               yAxes: [{
                     ticks: {
-                        beginAtZero: true
+                        beginAtZero: true,
+                        
                                 }
                             }]
           }
@@ -371,109 +359,6 @@ var ligneChart = new Chart(ctx, {
 
 </script>
 
-<script>
-     
-     var options = {
-      chart: {
-        type: "area",
-        height: 300,
-        foreColor: "#999",
-        stacked: true,
-        dropShadow: {
-          enabled: true,
-          enabledSeries: [0],
-          top: -2,
-          left: 2,
-          blur: 5,
-          opacity: 0.06
-        }
-      },
-      colors: ['#00E396', '#0090FF'],
-      stroke: {
-        curve: "smooth",
-        width: 3
-      },
-      dataLabels: {
-        enabled: false
-      },
-      series: [{
-        name: 'Total Views',
-        data: generateDayWiseTimeSeries(0, 18)
-      }, {
-        name: 'Unique Views',
-        data: generateDayWiseTimeSeries(1, 18)
-      }],
-      markers: {
-        size: 0,
-        strokeColor: "#fff",
-        strokeWidth: 3,
-        strokeOpacity: 1,
-        fillOpacity: 1,
-        hover: {
-          size: 6
-        }
-      },
-      xaxis: {
-        type: "datetime",
-        axisBorder: {
-          show: false
-        },
-        axisTicks: {
-          show: false
-        }
-      },
-      yaxis: {
-        labels: {
-          offsetX: 14,
-          offsetY: -5
-        },
-        tooltip: {
-          enabled: true
-        }
-      },
-      grid: {
-        padding: {
-          left: -5,
-          right: 5
-        }
-      },
-      tooltip: {
-        x: {
-          format: "dd MMM yyyy"
-        },
-      },
-      legend: {
-        position: 'top',
-        horizontalAlign: 'left'
-      },
-      fill: {
-        type: "solid",
-        fillOpacity: 0.7
-      }
-    };
-
-    var chart = new ApexCharts(document.querySelector("timeChart"), options);
-
-    chart.render();
-
-    function generateDayWiseTimeSeries(s, count) {
-      var values = [[
-        4,3,10,9,29,19,25,9,12,7,19,5,13,9,17,2,7,5
-      ], [
-        2,3,8,7,22,16,23,7,11,5,12,5,10,4,15,2,6,2
-      ]];
-      var i = 0;
-      var series = [];
-      var x = new Date("11 Nov 2012").getTime();
-      while (i < count) {
-        series.push([x, values[s][i]]);
-        x += 86400000;
-        i++;
-      }
-      return series;
-    }
-      
-</script>
 
 
 
@@ -496,13 +381,19 @@ var ligneChart = new Chart(ctx, {
           bodyFontColor: "#858796",
           borderColor: '#dddfeb',
           borderWidth: 1,
-          xPadding: 15,
-          yPadding: 15,
+          xPadding: 5,
+          yPadding: 5,
           displayColors: false,
           caretPadding: 10,
         },
         legend: {
-          display: false
+          display: true,
+          position: "bottom",
+          labels:{
+            boxWidth:10,
+            
+          }
+          
         },
         cutoutPercentage: 80,
       },
@@ -553,7 +444,7 @@ var ligneChart = new Chart(ctx, {
     
     
     
-        <script >
+    <script >
             var ctx = document.getElementById("chart").getContext("2d");
     
     var chart = new Chart(ctx, {
@@ -593,34 +484,7 @@ var ligneChart = new Chart(ctx, {
     <!-- polarité par aspect bar-chart -->
     
         <script>
-            // Set new default font family and font color to mimic Bootstrap's default styling
-    Chart.defaults.global.defaultFontFamily = 'Nunito', '-apple-system,system-ui,BlinkMacSystemFont,"Segoe UI",Roboto,"Helvetica Neue",Arial,sans-serif';
-    Chart.defaults.global.defaultFontColor = '#858796';
-    
-    function number_format(number, decimals, dec_point, thousands_sep) {
-      // *     example: number_format(1234.56, 2, ',', ' ');
-      // *     return: '1 234,56'
-      number = (number + '').replace(',', '').replace(' ', '');
-      var n = !isFinite(+number) ? 0 : +number,
-        prec = !isFinite(+decimals) ? 0 : Math.abs(decimals),
-        sep = (typeof thousands_sep === 'undefined') ? ',' : thousands_sep,
-        dec = (typeof dec_point === 'undefined') ? '.' : dec_point,
-        s = '',
-        toFixedFix = function(n, prec) {
-          var k = Math.pow(10, prec);
-          return '' + Math.round(n * k) / k;
-        };
-      // Fix for IE parseFloat(0.55).toFixed(0) = 0;
-      s = (prec ? toFixedFix(n, prec) : '' + Math.round(n)).split('.');
-      if (s[0].length > 3) {
-        s[0] = s[0].replace(/\B(?=(?:\d{3})+(?!\d))/g, sep);
-      }
-      if ((s[1] || '').length < prec) {
-        s[1] = s[1] || '';
-        s[1] += new Array(prec - s[1].length + 1).join('0');
-      }
-      return s.join(dec);
-    }
+         
     
     // Bar Chart Example
     new Chart(document.getElementById("bar-chartpa"), {
@@ -630,20 +494,20 @@ var ligneChart = new Chart(ctx, {
                         datasets: [
                             {
                                 label:'Positive',
-                                backgroundColor:'#FD6C9E',
+                                backgroundColor:'#a8c74d',
                                 data: {{ listvaluespa_P | safe }},
                                 
                                   
                             },
                             {
                                 label: 'Négative',
-                                backgroundColor: '#AF7AC5',
+                                backgroundColor: '#e74a3b',
                                 data: {{ listvaluespa_N | safe }},
                                   
                             },
                             {
                                 label: 'Neutre',
-                                backgroundColor: '#5DADE2',
+                                backgroundColor: '#8f9e9d',
                                 data: {{ listvaluespa_NE | safe }},
                                   
                             }
@@ -661,7 +525,7 @@ var ligneChart = new Chart(ctx, {
                                     },
                             
                             title: {
-                                 display: true,
+                                 display: false,
                                  text: 'Nombre de commentaires par Polarité pour chaque Aspect',
                             }
     
@@ -712,7 +576,7 @@ var ligneChart = new Chart(ctx, {
           caretPadding: 10,
         },
         legend: {
-          display: false
+          display: true
         },
         //cutoutPercentage: 80,
       },
@@ -720,112 +584,7 @@ var ligneChart = new Chart(ctx, {
     </script>
     
     
-        <script>
         
-           
-           
-    
-    
-    
-    
-            var object1 = JSON.parse(JSON.stringify({{ listvalues_S1|safe }}))
-            var object2 = JSON.parse(JSON.stringify({{ listvalues_S2|safe }}))
-            var object3 = JSON.parse(JSON.stringify({{ listvalues_S3|safe }}))
-    
-            console.log({{ listvalues_S2|safe }})
-            
-    
-            var ctx = document.getElementById("myLine");
-    
-            var myLineChart = new Chart(ctx, {
-                    labels:[],
-                    type: 'line',
-                    data: {
-                        
-                        datasets: [{
-                            label: 'Joie',
-                            data: {{ listvalues_S1|safe }} ,
-                            fill: false,
-                          
-                            borderColor: 'rgb(75, 192, 192)',
-                            tension: 0.1,
-                            pointRadius: 0,
-                        },
-    
-                        {
-                            label: 'Mécontentement',
-                            data: object2,
-                            
-                            fill: false,
-                            
-                            borderColor: '#e74a3b',
-                            tension: 0.1
-                        },
-    
-                        {
-                            label: 'Anxieté',
-                            data: object3,
-                            fill: false,
-                            
-                            
-                            borderColor: '#858796',
-                            tension: 0.1
-                        }
-                    ]
-                        }, 
-                        options:{
-                            plugins: {
-                            // Change options for ALL labels of THIS CHART
-                                    datalabels: {
-                                        display:false,
-                                        
-                                    }
-                            },
-                                                // legend: {
-                            //         display: false //This will do the task
-                            //     },
-                            // scales: {
-                            
-                            //     x: {
-                            //         type:"time",
-                            //         time: {
-                            //             displayFormats: {
-                            //                 quarter: "dd/MM/yyyy",
-                            //             },
-                                    
-                            //         scaleLabel: {
-                            //             display:     true,
-                            //             labelString: 'Date'
-                            //         }
-                            //     },
-    
-                            scales: {
-                        xAxes: [{
-                            
-                            type: 'time',
-                            time: {
-                                parser: 'YYYY-MM-DD',
-                                // round: 'day'
-                                tooltipFormat: 'YYYY-MM-DD'
-                            },
-                            // scaleLabel: {
-                            // 	display: true,
-                            // 	labelString: 'Date'
-                            // }
-                        }],
-                        yAxes: [{
-                                ticks: {
-                                    beginAtZero: true
-                                            }
-                                        }]
-                                   
-                    },
-    
-     }
-                       
-                    });
-        </script>
-
 
 
 

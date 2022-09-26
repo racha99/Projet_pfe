@@ -19,8 +19,18 @@ import pickle
 from django.conf import settings # import the settings file
 
 
-def TestTemplate(request):
-  return  render(request, 'test_new/index.html')
+def Pretraitement(x,f,l,v):
+   if (f == 'true' ) :
+        x=Data_Filter(x)
+   if(l =='true')  :  
+            
+        x=Lemma_Data(x) 
+   if(v =='true')  :  
+        x=Stop_Wordfr(x)            
+   return x
+
+
+
 
 global selected_cours 
 selected_cours = None
@@ -50,35 +60,11 @@ def select_annee(request):
         else: 
             return redirect(administration)
 
-
-
-config = {
-    "apiKey": "AIzaSyCUuMFEEcYy20VP78UBmUQn2V0zpHjw5jo",
-    "authDomain": "pfe-test-ab7fc.firebaseapp.com",
-    "projectId": "pfe-test-ab7fc",
-    "storageBucket": "pfe-test-ab7fc.appspot.com",
-    "messagingSenderId": "679303919609",
-    "appId": "1:679303919609:web:ec43f4ba85fbf39931af28",
-    #"measurementId": "G-measurement_id",
-    "databaseURL": "https://pfe-test-ab7fc-default-rtdb.firebaseio.com"
-}
-
-firebase = pyrebase.initialize_app(config)
-database=firebase.database()
-
-def data_display(request):
-  data = database.child('data').get().val()
-  df2 = pd.read_json(data, orient ='index')
   
-  print(data)
 
-  return  render(request, 'test_json.html',{'data': data})
-
-# custom redirection
+# ___________________________rediraction vers interfaces apres connexion__________________________________________
 def login_success(request):
-    """
-    Redirects users based on whether they are in the admins group
-    """
+  
     global selected_cours 
     selected_cours = None
 
@@ -97,21 +83,17 @@ def login_success(request):
         return redirect("dashboardTeacher")
     elif request.user.is_admin:
         return redirect('administration')
-    elif request.user.is_app_admin:
-        return redirect('Home')
-
-# def login(request):
-#     global selected_cours
-#     selected_cours="all"
-#     return  render(request, 'login.html')
+    
 
 
+
+# ___________________________dashboard enseignant__________________________________________
 def Dashboard(request,k=None):
   global selected_cours
   
   if request.user.is_authenticated: 
     if (request.user.is_teacher or request.user.is_admin): 
-     #bdlt here ...... from here to 'polarité générale'
+     
       today = datetime.datetime.now()
       year = today.year
   
@@ -125,26 +107,26 @@ def Dashboard(request,k=None):
       else : 
         teacher = request.user.teacher
         modules = Module.objects.filter(teachers=teacher.id)
-        module = modules[0].code
+
+        module = modules[0].code # affiche le premier module
         if selected_cours :
-          print ('iff')
+          
           module = selected_cours 
 
-      if (year<= 2021):
-        my_file = pd.read_csv("media/Neww.csv", sep=None, engine='python',encoding='utf-8', error_bad_lines=False)
+      if (year <= 2021): # lire du fichier csv
+        my_file = pd.read_csv("media/esi_test.csv", sep=None, engine='python',encoding='utf-8', error_bad_lines=False,infer_datetime_format=True)
         data = pd.DataFrame(data=my_file, index=None)
 
         data = data[data['Module']==module]
-
-        # data['Séance'] = (pd.to_datetime(data['Séance'])).dt.year
-        # data = data[data['Séance']==year]
         
         data['Séance'] = pd.to_datetime(data['Séance']).dt.strftime('%Y-%m-%d')
-        data=data[(data['Séance'] > '2020-12-31') & (data['Séance'] < '2022-01-01')]
-        print("this data",data)
+        
+        data=data[data['Séance'] > '2020-12-31']
+        
+        
         
 
-      else :
+      else : # lire de la base de données
         cmnts_all = Comment.objects.filter(Module=module)
         cmnts=[]
         for c in cmnts_all :
@@ -152,14 +134,11 @@ def Dashboard(request,k=None):
             cmnts.append(c.id)
         data = pd.DataFrame(list(comment_traité.objects.filter(comment_id__in=cmnts).values()))
         
-      print ("data ta3 3chiya",data)
 
-   
-    #wordcloud
-     #bdlt here
+   # ------------------------------------------wordcloud---------------------------------------------- 
     if not data.empty : 
       empty = 0
-      exclure_mots = ['dans','avec','elles','elle','il','ils','je',"j'",'d', 'du', 'de', 'la', 'des', 'le', 'et', 'est', 'elle', 'une', 'en', 'que', 'aux', 'qui', 'ces', 'les', 'dans', 'sur', 'l', 'un', 'pour', 'par', 'il', 'ou', 'à', 'ce', 'a', 'sont', 'cas', 'plus', 'leur', 'se', 's', 'vous', 'au', 'c', 'aussi', 'toutes', 'autre', 'comme', 'mais', 'pas', 'ou']
+      exclure_mots = ["j'ai",'ne','me',"c'est",'nos','dans','avec','elles','elle','il','ils','je',"j'",'d', 'du', 'de', 'la', 'des', 'le', 'et', 'est', 'elle', 'une', 'en', 'que', 'aux', 'qui', 'ces', 'les', 'dans', 'sur', 'l', 'un', 'pour', 'par', 'il', 'ou', 'à', 'ce', 'a', 'sont', 'cas', 'plus', 'leur', 'se', 's', 'vous', 'au', 'c', 'aussi', 'toutes', 'autre', 'comme', 'mais', 'pas', 'ou']
       comment_words = " "
       for i in data['Commentaire']: 
         i = str(i) 
@@ -171,7 +150,7 @@ def Dashboard(request,k=None):
       
       # Creating the Word Cloud
       final_wordcloud = WordCloud(width = 800, height = 800, 
-                  background_color ='black',
+                  background_color ='white',
                   stopwords = exclure_mots,  
                   min_font_size = 5).generate(comment_words)
 
@@ -186,11 +165,7 @@ def Dashboard(request,k=None):
       polarité = [] 
       for x in data["Polarité"]:
         polarité.append(x)
-
-      polarité_stat = dict(Counter(polarité))
-      
-
-    
+      polarité_stat = dict(Counter(polarité))    
       if "P" in polarité_stat:
         p = polarité_stat["P"]
       else:
@@ -223,9 +198,11 @@ def Dashboard(request,k=None):
 
       apco= data.groupby(["Communication","Polarité"],as_index=False)['Commentaire'].count()
       apco = apco.rename(columns={'Polarité':'Polaritéco'})
+      
 
       aps= data.groupby(["Structure","Polarité"],as_index=False)['Commentaire'].count()
       aps = aps.rename(columns={'Polarité':'Polarités'})
+
 
 
       aspect_pol = [] 
@@ -243,6 +220,8 @@ def Dashboard(request,k=None):
           if x == 1 : aspect_pol.append('Co')
       
       listkeys_AgStat=dict(Counter(aspect_pol)).keys()
+      
+
 
       listkeys_Ag=[]
       for x in listkeys_AgStat:
@@ -272,7 +251,7 @@ def Dashboard(request,k=None):
 
       list_P1= app[app["Polaritép"]=="P"]
       list_P1= list_P1[list_P1["Présentation"]==1]
-      print("list_p1",list_P1)
+      
 
       list_P2= apc[apc["Polaritéc"]=="P"]
       list_P2= list_P2[list_P2["Contenu"]==1]
@@ -288,22 +267,55 @@ def Dashboard(request,k=None):
 
       list_P6= apg[apg["Polaritég"]=="P"]
       list_P6= list_P6[list_P6["Général"]==1]
-  
-
-      listvaluespa_P = [] 
-      for x in list_P2["Commentaire"]:
-        listvaluespa_P.append(x)
-      for x in list_P4["Commentaire"]:
-        listvaluespa_P.append(x)
-      for x in list_P5["Commentaire"]:
-        listvaluespa_P.append(x)
-      for x in list_P6["Commentaire"]:
-        listvaluespa_P.append(x)
-      for x in list_P1["Commentaire"]:
-        listvaluespa_P.append(x)
-      for x in list_P3["Commentaire"]:
-        listvaluespa_P.append(x)
       
+      exi1=False
+      listvaluespa_P = [] 
+      for k in listkeysAg:
+        if k == "Contenu" : 
+          for x in list_P2["Commentaire"]:
+            listvaluespa_P.append(x)
+            exi1=True
+          if not(exi1):
+              listvaluespa_P.append(0)
+          exi1=False
+        if k == "Communication" : 
+          for x in list_P4["Commentaire"]:
+            listvaluespa_P.append(x)
+            exi1=True
+          if not(exi1):
+            listvaluespa_P.append(0)
+          exi1=False
+        if k == "Design" : 
+          for x in list_P5["Commentaire"]:
+            listvaluespa_P.append(x)
+            exi1=True
+          if not(exi1):
+            listvaluespa_P.append(0)
+          exi1=False
+        if k == "Général" : 
+          for x in list_P6["Commentaire"]:
+            listvaluespa_P.append(x)
+            exi1=True
+          if not(exi1):
+            listvaluespa_P.append(0)
+          exi1=False
+        if k == "Présentation" : 
+          for x in list_P1["Commentaire"]:
+            listvaluespa_P.append(x)
+            exi1=True
+          if not(exi1):
+            listvaluespa_P.append(0)
+          exi1=False
+        if k == "Structure" : 
+          for x in list_P3["Commentaire"]:
+            listvaluespa_P.append(x)
+            exi1=True
+          if not(exi1):
+            listvaluespa_P.append(0)
+          exi1=False
+          
+     
+
       
       list_N1= app[app["Polaritép"]=="N"]
       list_N1= list_N1[list_N1["Présentation"]==1]
@@ -323,21 +335,53 @@ def Dashboard(request,k=None):
       list_N6= apg[apg["Polaritég"]=="N"]
       list_N6= list_N6[list_N6["Général"]==1]
     
-
+      exi2=False
+      
       listvaluespa_N = [] 
-      for x in list_N2["Commentaire"]:
-        listvaluespa_N.append(x)
-      for x in list_N4["Commentaire"]:
-        listvaluespa_N.append(x)
-      for x in list_N5["Commentaire"]:
-        listvaluespa_N.append(x)
-      for x in list_N6["Commentaire"]:
-        listvaluespa_N.append(x)
-      for x in list_N1["Commentaire"]:
-        listvaluespa_N.append(x)
-      for x in list_N3["Commentaire"]:
-        listvaluespa_N.append(x)
-  
+      for k in listkeysAg:
+        if k == "Contenu" : 
+          for x in list_N2["Commentaire"]:
+            listvaluespa_N.append(x)
+            exi2=True
+          if not(exi2):
+            listvaluespa_N.append(0)
+          exi2=False
+        if k == "Communication" : 
+          for x in list_N4["Commentaire"]:
+            listvaluespa_N.append(x)
+            exi2=True
+          if not(exi2):
+            listvaluespa_N.append(0)
+          exi2=False
+        if k == "Design" :
+          for x in list_N5["Commentaire"]:
+            listvaluespa_N.append(x)
+            exi2=True
+          if not(exi2):
+            listvaluespa_N.append(0)
+          exi2=False
+        if k == "Général" : 
+          for x in list_N6["Commentaire"]:
+            listvaluespa_N.append(x)
+            exi2=True
+          if not(exi2):
+            listvaluespa_N.append(0)
+          exi2=False
+        if k == "Présentation" : 
+          for x in list_N1["Commentaire"]:
+            listvaluespa_N.append(x)
+            exi2=True
+          if not(exi2):
+            listvaluespa_N.append(0)
+          exi2=False
+        if k == "Structure" : 
+          for x in list_N3["Commentaire"]:
+            listvaluespa_N.append(x)
+            exi2=True
+          if not(exi2):
+            listvaluespa_N.append(0)
+          exi2=False
+      
 
       list_NE1= app[app["Polaritép"]=="NE"]
       list_NE1= list_NE1[list_NE1["Présentation"]==1]
@@ -357,20 +401,52 @@ def Dashboard(request,k=None):
       list_NE6= apg[apg["Polaritég"]=="NE"]
       list_NE6= list_NE6[list_NE6["Général"]==1]
     
-
+      exi3 = False
       listvaluespa_NE = [] 
-      for x in list_NE2["Commentaire"]:
-        listvaluespa_NE.append(x)
-      for x in list_NE4["Commentaire"]:
-        listvaluespa_NE.append(x)
-      for x in list_NE5["Commentaire"]:
-        listvaluespa_NE.append(x)
-      for x in list_NE6["Commentaire"]:
-        listvaluespa_NE.append(x)
-      for x in list_NE1["Commentaire"]:
-        listvaluespa_NE.append(x)
-      for x in list_NE3["Commentaire"]:
-        listvaluespa_NE.append(x)
+      for k in listkeysAg:
+        if k == "Contenu" :
+          for x in list_NE2["Commentaire"]:
+            listvaluespa_NE.append(x)
+            exi3=True
+          if not(exi3):
+            listvaluespa_NE.append(0)
+          exi3=False
+        if k == "Communication" :
+          for x in list_NE4["Commentaire"]:
+            listvaluespa_NE.append(x)
+            exi3=True
+          if not(exi3):
+            listvaluespa_NE.append(0)
+          exi3=False
+        if k == "Design" :
+          for x in list_NE5["Commentaire"]:
+            listvaluespa_NE.append(x)
+            exi3=True
+          if not(exi3):
+            listvaluespa_NE.append(0)
+          exi3=False
+        if k == "Général" :
+          for x in list_NE6["Commentaire"]:
+            listvaluespa_NE.append(x)
+            exi3=True
+          if not(exi3):
+            listvaluespa_NE.append(0)
+          exi3=False
+        if k == "Présentation" :
+          for x in list_NE1["Commentaire"]:
+            listvaluespa_NE.append(x)
+            exi3=True
+          if not(exi3):
+            listvaluespa_NE.append(0)
+          exi3=False
+        if k == "Structure" :
+          for x in list_NE3["Commentaire"]:
+            listvaluespa_NE.append(x)
+            exi3=True
+          if not(exi3):
+            listvaluespa_NE.append(0)
+          exi3=False
+
 
       # --------------------------------------------------Valeurs--------------------------------------------------------  
       valeur = [] 
@@ -450,15 +526,29 @@ def Dashboard(request,k=None):
 
 
       # ------------------------------------------------Attitude générale-------------------------------------------
-      print("attitude general")
+      
       attitude = [] 
       for x in data["Attitude"]:
         attitude.append(x)
-      print(data["Attitude"])
+      
       
       attitude_stat = dict(Counter(attitude)) 
       attitude_keys = attitude_stat.keys()
       attitude_values = attitude_stat.values()
+          
+        
+      if "A" in attitude_stat : 
+        attitude_a = attitude_stat["A"]
+      else : 
+        attitude_a = 0 
+      if "H" in attitude_stat : 
+        attitude_h = attitude_stat["H"]
+      else : 
+        attitude_h = 0 
+      if "NE" in attitude_stat : 
+        attitude_ne = attitude_stat["NE"]
+      else : 
+        attitude_ne= 0 
 
       listkeys_T = []
       listvalues_T = []
@@ -479,17 +569,7 @@ def Dashboard(request,k=None):
         else:
           j='Hostile'
           listkeysAt.append(j)
-      print("attitude",listkeysAt[0])
-
-      attitude_ne=0
-      attitude_a=0
-      attitude_h=0
-      if "NE" in listkeys_T:
-        attitude_ne=listvalues_T[0]
-      if "A" in listkeys_T:
-        attitude_a=listvalues_T[1]
-      if "H" in listkeys_T:
-        attitude_h=listvalues_T[2]
+      
 
       
 
@@ -501,34 +581,29 @@ def Dashboard(request,k=None):
       attitude_ne=round((attitude_ne/S)*100)
       attitude_a=round((attitude_a/S)*100)
       attitude_h=round((attitude_h/S)*100)
-      print("comme +",S,attitude_ne,attitude_a,attitude_h)
+      
 
 
 
 
       # -----------------------------------------------Evolutions des émotions-------------------------------------------
       data["Séance"]=pd.to_datetime(data["Séance"]).dt.strftime('%Y-%m-%d')
-      # data["Séance"]=pd.to_datetime(data["Séance"], format='%d/%m/%Y')
       
       data_sorted=data.sort_values(by="Séance")
 
-      print("seances",data_sorted)
-      # for x in data["Séance"]:
-      #     séance.append(x)
       
-      #print("these are seance",séance)
+      
 
       séance_stat=dict(Counter(data_sorted))
       séance_keys=séance_stat.keys()
 
-      # print("these are seance stat and keys",séance_stat,séance_keys)
-
+      
       listkeys_Se=[]
       
       for x in séance_keys:
         listkeys_Se.append(x)
 
-      #print("these are listkeys_Se",listkeys_Se)
+      
 
       s1= data_sorted.groupby(["Joie","Séance"],as_index=False)['Commentaire'].count()
       s2= data_sorted.groupby(["Mécontentement","Séance"],as_index=False)['Commentaire'].count()
@@ -549,9 +624,7 @@ def Dashboard(request,k=None):
       list_S7= s7[s7["Gratitude"]==1]
       list_S8= s8[s8["Satisfaction"]==1]
       
-      print("these are S1",s8)
-      print("these are S1",list_S8)
-      #print (sorted(list_S1,key=lambda x:datetime.datetime.strptime(x[2],"%d/%m/%Y")))
+      
       listvalues_S1 = [] 
       listvalues_S1Y = [] 
       listvalues_S1X = [] 
@@ -648,38 +721,22 @@ def Dashboard(request,k=None):
       for i in range(0,len(listvalues_S8X)):
         listvalues_S8.append({"x" : listvalues_S8X[i], "y" : listvalues_S8Y[i]})
       
-      
-      # jsonList
-
-
-      print("date S8",listvalues_S8)
-        
-      # listvalues_S2 = [] 
-      # for x in list_S2["Commentaire"]:
-      #   listvalues_S2.append(x)
-      # listvalues_S3 = [] 
-      # for x in list_S3["Commentaire"]:
-      #   listvalues_S3.append(x)
-
-      
-      print ( "listevaluesS1",listvalues_S1X,listvalues_S1Y)
-      
-
 
       context = {
-              #bdlt here
+             
               
               'empty' : empty,
               'p' : p,
               'n' : n,
               'ne' : ne,
-              # 'jsonized':jsonized,
+              
               "jsonList": jsonList,
               'attitude_ne':attitude_ne,
               'attitude_a':attitude_a,
               'attitude_h':attitude_h,
               'listkeys_V': listkeysV,
               'listvalues_V': listvalues_V,
+              'year':year,
 
               'listkeys_Ex': listkeysEx,
               'listvalues_Ex': listvalues_Ex,
@@ -706,7 +763,8 @@ def Dashboard(request,k=None):
               'listvaluespa_P':listvaluespa_P,
               'listvaluespa_N':listvaluespa_N,
               'listvaluespa_NE':listvaluespa_NE,
-              'list_cours':modules,
+              'modules':modules,
+              'module':module,
 
       
 
@@ -718,11 +776,12 @@ def Dashboard(request,k=None):
     
       return  render(request, 'dashboards/dashTeacher.html',context)
     else : 
-        msg = "Pas encore de données pour les valeurs sélectionées"
+        
         context = {
-        'msg' : msg,
+        
         'year' : year,
         'modules' : modules, 
+        'module' :module
         }
         return render(request, 'dashboards/dashTeacher.html', context)
 
@@ -755,7 +814,7 @@ def select_module_etudiant(request):
 
 def DashboardViewComments(request):
     global selected_cours
-    print("this cours that reached",selected_cours)
+   
     #load csv file
     my_file = pd.read_csv("media/Neww.csv", sep=None, engine='python',encoding='utf-8', error_bad_lines=False)
     data = pd.DataFrame(data=my_file, index=None)
@@ -765,14 +824,12 @@ def DashboardViewComments(request):
     if(selected_cours!=None):
       data=data.query("Module=="+"'"+selected_cours+"'")
     
-    # if selected_cours!="all":
-    #   odd = filter(lambda p : p%2 != 0, nums)
+    
    
     list_cours = list(dict.fromkeys(list_cours))
     out = data.values.tolist()
     
-   # filtered=filter(lambda Module : Module=="Esi",data)
-    print("is this list of all filtered",data.query("Module== 'reuissir-le-changement'"))
+ 
     totalCom=len(data.index)
     context = {
         'data':out,
@@ -791,15 +848,16 @@ def traitement_comment(comment):
  c.Commentaire=comment.text
  c.Module=comment.Module
  c.Séance=comment.Séance
- modeles = ["FLV_12_mlknn_30_t", "FLV_12_mlknn_30_ta", "FLV_12_mlknn_30_ts", "FLV_12_svm_30_p", "FLV_12_svm_30_at", "FLV_12_svm_30_e"]
+ # les meilleurs modeles pour chaque niveau
+ modeles = ["FLV_13_lpmlp_30_t", "FLV_13_lpsvm_30_ta", "FLV_13_brmlp_30_ts", "FLV_13_rna_30_p", "FLV_13_svm_30_at", "FLV_13_svm_30_e"] 
  for i in modeles : 
    modele = i
-   print ('modele : ', modele)
+   
    array = modele.split("_")
    s=[]
    for i in range(len(array)):
       s.append(array[i])
-   print ('s : ', s)
+   
 
    pathfile = os.path.join(settings.MODELS,modele)
    with open(pathfile,'rb') as p:
@@ -808,18 +866,18 @@ def traitement_comment(comment):
    vectors=loaded_model['vectors']
 
    if comment : #cheking if comment have value
-       vector = vectors.transform([comment.text]).todense()
+       com=Pretraitement(comment.text,True,True,True)
+       vector = vectors.transform([com]).todense()
        result = classificatio.predict((vector[0]))
        if (s[4]=="t"):
          result =result.toarray() 
-         print ('result : ', result)
          c.Utilité = result[0,0]
          c.Intrinsèque = result[0,1]
          c.Accomplissement = result[0,2]
          c.Cout = result [0,3]
        elif (s[4]=="ta"):
          result =result.toarray() 
-         print ('result : ', result)
+        
          c.Présentation = result[0,0]
          c.Contenu = result[0,1]
          c.Design = result[0,2]
@@ -828,7 +886,7 @@ def traitement_comment(comment):
          c.Structure = result [0,5]
        elif (s[4]=="ts"):
          result =result.toarray() 
-         print ('result : ', result)
+       
          c.Anxieté = result[0,0]
          c.Colère = result[0,1]
          c.Ennui = result[0,2]
@@ -838,21 +896,20 @@ def traitement_comment(comment):
          c.Satisfaction = result [0,6]
          c.Gratitude = result [0,7]
        elif (s[4]=="p"):
-         print ('result : ', result)
+        
          c.Polarité = result[0]
        elif (s[4]=="at"):
-         print ('result : ', result)
+         
          c.Attitude = result[0]
        elif (s[4]=="e"):
-         print ('result : ', result)
+         
          c.Attente = result[0]
  c.save()
  return (c)
 
 
 #_________________________administration__________________________
-# def administration(request):
-#   return  render(request,'dashboards/dashAdministration.html')
+
 
 
 
@@ -880,19 +937,19 @@ def administration(request):
       if selected_annee : 
         year = int(selected_annee)
 
-      if (year<= 2021):
-        my_file = pd.read_csv("media/Neww.csv", sep=None, engine='python',encoding='utf-8', error_bad_lines=False)
+      if (year <= 2021):
+        my_file = pd.read_csv("media/esi_test.csv", sep=None, engine='python',encoding='utf-8', error_bad_lines=False)
         df = pd.DataFrame(data=my_file, index=None)
-        # date_after = datetime.date(2020, 12,31)
-        # date_before= datetime.date(2022, 1, )
-        df['Séance'] = (pd.to_datetime(df['Séance'], format="%Y-%m-%d"))
+        
+        
+        df['Séance'] = pd.to_datetime(df['Séance']).dt.strftime('%Y-%m-%d')
+      
+
         df=df[(df['Séance'] > '2020-12-31') & (df['Séance'] < '2022-01-01')]
-        # df = df[df['Séance']==year]
-        print ("this is", df)
+       
         if selected_niv :
           df = df[df['Niveau']==selected_niv]
-          print (df)
-        
+          
 
       else :
         modules_set = Module.objects.all()
@@ -901,21 +958,21 @@ def administration(request):
         test1=[]
         for t in modules_set : 
             test1.append(t.code) 
-        print ('codes modules', test1)
+       
         cmnts_all = Comment.objects.filter(Module__in=test1)
-        print (cmnts_all)  
+       
         cmnts=[]
         for c in cmnts_all :
           if (c.get_year()==year):
             cmnts.append(c.id)
-        print (cmnts)
+        
         cmnts_trait= comment_traité.objects.filter(comment_id__in=cmnts)
-        print (cmnts_trait) 
+         
         df = pd.DataFrame(list(comment_traité.objects.filter(comment_id__in=cmnts).values()))
-        print (df)
+       
       
       # ------------------------------------------Polarité générale--------------------------------------------
-     #bdlt here
+    
       if not df.empty : 
         empty = 0
      
@@ -954,8 +1011,7 @@ def administration(request):
         listvalues_NE=[]
         for x in listkeys_pm:
             listkeys_pol_mod.append(x)
-        print("listkeys_pol_mod",listkeys_pol_mod)
-        print("pol_mod",pol_mod)
+       
         exi=False
     
         for m in listkeys_pol_mod:
@@ -989,26 +1045,7 @@ def administration(request):
           exi=False
 
         
-        
-      
-        
-
-      
-
-
-
-
-
-        # liste_P= pol_mod[pol_mod["Polarité"]=="P"]
-        # liste_N= pol_mod[pol_mod["Polarité"]=="N"]
-        # liste_NE= pol_mod[pol_mod["Polarité"]=="NE"]
-        # print("liste_P",liste_P)
-
-        # listvalues_P=liste_P["Commentaire"].tolist()
-        # listvalues_N=liste_N["Commentaire"].tolist()
-        # listvalues_NE=liste_NE["Commentaire"].tolist()
-        print(" listvalues_P", listvalues_P)
-
+  
         # -----------------------------------------------Nuage des mots-------------------------------------------
         exclure_mots = ['avec','car','cela','sans','ça' ,'d', 'du', 'de', 'la', 'des', 'le', 'et', 'est','elle', 'une', 'en', 'que', 'aux', 'qui', 'ces', 'les', 'dans', 'sur', 'l', 'un', 'pour', 'par', 'il', 'ou', 'à', 'ce', 'a', 'sont', 'cas', 'plus', 'leur', 'se', 's', 'vous','je','tu', 'au', 'c', 'aussi', 'toutes','tout','tous' , 'autre', 'comme', 'mais', 'pas', 'ou']
 
@@ -1033,7 +1070,7 @@ def administration(request):
         final_wordcloud.to_file("static/images/wordcloudall.png")
 
         context = {
-        #bdlt here
+        
         'empty' : empty, 
           
 
@@ -1073,8 +1110,7 @@ def administration(request):
         }
         return render(request, 'dashboards/dashAdministration.html', context)
 
-# def Input(request):
-#   return render(request, 'dashboards/inputStudent.html')
+
 
 def Input(request):
   global selected_module
@@ -1099,12 +1135,10 @@ def Input(request):
                 comment.save()
                 comment_traité=traitement_comment(comment)
 
-                print(comments)    
-    return render(request, 'dashboards/inputStudent.html', {'form': form,'comments': comments,'modules':modules})
+                
+    return render(request, 'dashboards/inputStudent.html', {'form': form,'comments': comments,'modules':modules, "mod":selected_module})
   
-      # return render(request,'student.html',{'form': form, 'comments': comments, 'modules':modules})
-
-    # 
+       
     
     
 

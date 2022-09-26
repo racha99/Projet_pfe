@@ -42,7 +42,7 @@ class User(AbstractUser):
     is_teacher= models.BooleanField(default=False)
     is_student = models.BooleanField(default=False)
     is_admin = models.BooleanField(default=False)
-    is_app_admin = models.BooleanField(default=False)
+    is_app_admin = models.BooleanField(default=False) 
 
 class Teacher(models.Model):
     user = models.OneToOneField(User, on_delete=models.CASCADE, related_name='teacher')    

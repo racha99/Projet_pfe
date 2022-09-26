@@ -81,13 +81,8 @@
                     <p class="card-text text-white"  >Niveau de classification :</p>
                   </div>
                   <div class="col-6">
-                    <!-- <select id="Repre" class="form-select" required aria-label="select example" style="width:15;">
-                    <option value="p" selected >Polarité</option>
-                    <option value="s">Sentiments</option>
-                    <option value="as">Aspects</option>
-                    <option value="a" >Attitude</option> -->
-                  <!-- </select> -->
-                    <p class="card-text text-white " style="font-weight: bold;" id="niveau" > {{niveau}}</p>
+                   
+                    <p class="card-text text-white " style="font-weight: bold;" id="niveau" > hihihi</p>
                   </div>        
                   </div>
 
@@ -173,6 +168,8 @@
                     {% endfor %}
                   </tr>
                   {% endif %}
+
+                  
 
 
 
@@ -355,6 +352,15 @@
                     {% endfor %}
                   </tr>
                   {% endif %}
+                  
+                  {% if neutre %}
+                  <tr>
+                    <td scope="row">Neutre</td>
+                    {% for c in  neutre %}
+                    <td scope="col">{{c}}</td>
+                    {% endfor %}
+                  </tr>
+                  {% endif %}
 
               </table>
 
@@ -362,7 +368,7 @@
               {% if structure %}
             
               <table id="myTable2" class="table  table-hover  table-bordered mx-auto   ">
-                <tr style="background-color: #4e73df;">
+                <tr style="background-color: #4e73df; ">
                   <th>Hamming score</th>
                   <th>Hamming loss</th>
                  
@@ -381,7 +387,7 @@
               {% if intrinseque %}
             
               <table id="myTable2" class="table  table-hover  table-bordered mx-auto   ">
-                <tr style="background-color: #4bc0c0;">
+                <tr style="background-color: #4e73df;">
                   <th>Hamming score</th>
                   <th>Hamming loss</th>
                  
@@ -400,7 +406,7 @@
               {% if satisfaction %}
             
               <table id="myTable2" class="table  table-hover  table-bordered mx-auto   ">
-                <tr style="background-color: #4bc0c0;">
+                <tr style="background-color: #4e73df;">
                   <th>Hamming score</th>
                   <th>Hamming loss</th>
                  
@@ -529,7 +535,9 @@
     $(document).ready(function() {
       
       $("#Namemodel option:contains({{last}})").attr('selected', true);
+     
       console.log('{{ niveau  }}')
+
       
       if ('{{ niveau  }}' == 'p') {
       $("#niveau").text("Polarité"); $("#niveaupred").text("Polarité");}
@@ -576,7 +584,9 @@
              },
              
              success: function(data){
+              console.log("hih");
                console.log(data.niveau);
+                
                if (data.niveau == 'p') {
                $("#niveau").text("Polarité");$("#niveaupred").text("Polarité");}
                if (data.niveau == 'ts') {
@@ -605,7 +615,7 @@
               //  $("#represent").text("Uni-gram & Bi-gram & Tri-gram");}
 
                //-----------------------------
-               $("#test").text(data.test+" %");
+              // $("#test").text(data.test+" %");
                   
                $('#myTable').find("tr:gt(0)").remove();
                $('#myTable2').find("tr:gt(0)").remove();
@@ -626,7 +636,7 @@
                $('#myTable').append(row);
                row = $('<tr><td> Hostile</td><td>' + data.hostile[0]+ '</td><td>' + data.hostile[1]+ '</td><td>' + data.hostile[2]+ '</td></tr>');
                $('#myTable').append(row);}
-              console.log(data.niveau)
+            
               if(data.niveau=="ta"){
 
               var row = $('<tr><td> Présentation</td><td>' + data.presentation[0]+ '</td><td>' + data.presentation[1]+ '</td><td>' + data.presentation[2]+ '</td></tr>');
